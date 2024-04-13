@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "D:/0. Acadmic stuff/CSE '21/Sem-4/CSE 4402 VISUAL PROGRAMMING LAB/Projectv22/flow-crm-tutorial/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "D:/0. Acadmic stuff/CSE '21/Sem-4/CSE 4402 VISUAL PROGRAMMING LAB/Projectv22/flow-crm-tutorial/./frontend/generated/jar-resources",
+  "staticOutput": "D:/0. Acadmic stuff/CSE '21/Sem-4/CSE 4402 VISUAL PROGRAMMING LAB/Projectv22/flow-crm-tutorial/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "D:\\0. Acadmic stuff\\CSE '21\\Sem-4\\CSE 4402 VISUAL PROGRAMMING LAB\\Projectv22\\flow-crm-tutorial\\target\\classes\\META-INF\\VAADIN\\config",
+  "frontendBundleOutput": "D:\\0. Acadmic stuff\\CSE '21\\Sem-4\\CSE 4402 VISUAL PROGRAMMING LAB\\Projectv22\\flow-crm-tutorial\\target\\classes\\META-INF\\VAADIN\\webapp",
+  "devBundleOutput": "D:/0. Acadmic stuff/CSE '21/Sem-4/CSE 4402 VISUAL PROGRAMMING LAB/Projectv22/flow-crm-tutorial/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "D:/0. Acadmic stuff/CSE '21/Sem-4/CSE 4402 VISUAL PROGRAMMING LAB/Projectv22/flow-crm-tutorial/target/dev-bundle/config",
+  "jarResourcesFolder": "D:/0. Acadmic stuff/CSE '21/Sem-4/CSE 4402 VISUAL PROGRAMMING LAB/Projectv22/flow-crm-tutorial/./frontend/generated/jar-resources",
+  "themeName": "flowcrmtutorial",
+  "clientServiceWorkerSource": "D:\\0. Acadmic stuff\\CSE '21\\Sem-4\\CSE 4402 VISUAL PROGRAMMING LAB\\Projectv22\\flow-crm-tutorial\\target\\sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
