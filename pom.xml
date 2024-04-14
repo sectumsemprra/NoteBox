@@ -5,7 +5,15 @@
     <!-- Project from https://start.vaadin.com/project/df8fdf25-4e96-4ab4-94c6-9f2773bd212b -->
     <groupId>com.example.application</groupId>
     <artifactId>flowcrmtutorial</artifactId>
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <name>flowcrmtutorial</name>
+=======
     <name>notebox</name>
+>>>>>>> e2c7e11 (added primary login page)
+=======
+    <name>notebox</name>
+>>>>>>> e2c7e117f1dea66fcb6273f02b5df204e34136d5
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -75,10 +83,19 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> e2c7e117f1dea66fcb6273f02b5df204e34136d5
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+<<<<<<< HEAD
+>>>>>>> e2c7e11 (added primary login page)
+=======
+>>>>>>> e2c7e117f1dea66fcb6273f02b5df204e34136d5
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>

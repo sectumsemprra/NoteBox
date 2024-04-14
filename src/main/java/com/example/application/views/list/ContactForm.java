@@ -17,12 +17,24 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+import java.util.List;
+
+=======
+=======
+>>>>>>> e2c7e117f1dea66fcb6273f02b5df204e34136d5
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
 
+<<<<<<< HEAD
+>>>>>>> e2c7e11 (added primary login page)
+=======
+>>>>>>> e2c7e117f1dea66fcb6273f02b5df204e34136d5
 public class ContactForm extends FormLayout {
     Binder<Contact> binder = new BeanValidationBinder<>(Contact.class);
     TextField firstName = new TextField("First name");
