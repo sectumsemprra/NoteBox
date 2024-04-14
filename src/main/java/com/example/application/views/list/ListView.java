@@ -2,6 +2,10 @@ package com.example.application.views.list;
 
 import com.example.application.data.Contact;
 import com.example.application.services.CrmService;
+<<<<<<< HEAD
+=======
+import com.example.application.views.MainLayout;
+>>>>>>> e2c7e11 (added primary login page)
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -11,11 +15,20 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+<<<<<<< HEAD
+=======
+import jakarta.annotation.security.PermitAll;
+>>>>>>> e2c7e11 (added primary login page)
 
 import java.util.Collections;
 
 @Route(value = "", layout = MainLayout.class)
+<<<<<<< HEAD
 @PageTitle("Contacts | Vaadin CRM")
+=======
+@PageTitle("Notes | NoteBox")
+@PermitAll
+>>>>>>> e2c7e11 (added primary login page)
 public class ListView extends VerticalLayout {
     Grid<Contact> grid = new Grid<>(Contact.class);
     TextField filterText = new TextField();
