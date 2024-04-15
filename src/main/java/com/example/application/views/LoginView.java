@@ -1,42 +1,46 @@
 package com.example.application.views;
 
+import com.example.application.services.AuthService;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+import jakarta.annotation.security.PermitAll;
 
-@Route("login")
+@Route("/")
 @PageTitle("Login | NoteBox")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+@AnonymousAllowed
+public class LoginView extends Div {
 
-    private final LoginForm login = new LoginForm(); //final= value of this can't be changed
-
-    public LoginView() {
-        addClassName("login_view"); //for css classes
+    public LoginView(AuthService authService) {
+        setId("login-view"); //for css classes
         setSizeFull();
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-
-        login.setAction("login");
+        var username = new TextField("Username");
+        var password = new PasswordField("Password");
 
         add(
                 new H1("NoteBox"),
-                login
+                username,
+                password,
+                new Button("Login",
+                        event -> {
+                            try{
+                                authService.authenticate(username.getValue(), password.getValue());
+                                Notification.show("back to main");
+                                UI.getCurrent().navigate("/ws");
+                            }
+                            catch(AuthService.AuthException e){
+                                Notification.show("Wrong Credentials");
+                            }
+                        }
+                        )
         );
     }
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        // inform the user about an authentication error
-        if (beforeEnterEvent.getLocation()
-                .getQueryParameters()
-                .getParameters()
-                .containsKey("error")) {
-            login.setError(true);
-
-        }
-    }
 }

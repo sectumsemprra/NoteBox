@@ -1,6 +1,6 @@
 package com.example.application.security;
 
-import com.example.application.views.LoginView;
+//import com.example.application.views.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +22,13 @@ public class SecurityConfig extends VaadinWebSecurity {
                 auth.requestMatchers(
                         AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/images/*.png")).permitAll());
         super.configure(http);
-        setLoginView(http, LoginView.class); //set login view to our login class rather than the default
+        //setLoginView(http, LoginView.class); //set login view to our login class rather than the default
     }
 
-    @Bean
+    /*@Bean
     public UserDetailsService users(){
         return new InMemoryUserDetailsManager(
                 User.withUsername("u").password("{noop}u").roles("USER").build()
         );
-    }
+    }*/
 }
