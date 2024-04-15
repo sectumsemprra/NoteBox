@@ -4,9 +4,6 @@ package com.example.application.services;
 import com.example.application.data.Company;
 import com.example.application.data.Contact;
 import com.example.application.data.Status;
-import com.example.application.data.CompanyRepository;
-import com.example.application.data.ContactRepository;
-import com.example.application.data.StatusRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

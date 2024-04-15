@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityService {
 
-    public void logout(){
+    /*public void logout(){
         UI.getCurrent().getPage().setLocation("/");
         SecurityContextLogoutHandler logout = new SecurityContextLogoutHandler();
         logout.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null,null);
-    }
+    }*/
 }

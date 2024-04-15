@@ -9,6 +9,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Route("file-upload")
+
+@AnonymousAllowed
 public class FileUploadView extends VerticalLayout {
 
     private Grid<String> grid = new Grid<>();
@@ -29,6 +31,7 @@ public class FileUploadView extends VerticalLayout {
         MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
+
 
         upload.addSucceededListener(event -> {
             String fileName = event.getFileName();
@@ -75,4 +78,7 @@ public class FileUploadView extends VerticalLayout {
     private void refreshGrid() {
         grid.setItems(fileTitles);
     }
+
+
+
 }

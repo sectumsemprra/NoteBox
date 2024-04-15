@@ -1,6 +1,7 @@
 package com.example.application.views;
 
 import com.example.application.security.SecurityService;
+import com.example.application.views.list.FileUploadView;
 import com.example.application.views.list.ListView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -25,12 +26,12 @@ public class MainLayout extends AppLayout {
         H1 logo = new H1("NoteBox");
         logo.addClassNames("text-l", "m-m");
 
-        Button logoutbtn = new Button("Log out", e->securityService.logout());
+        //Button logoutbtn = new Button("Log out", e->securityService.logout());
 
         HorizontalLayout header = new HorizontalLayout(
                 new DrawerToggle(),
-                logo,
-                logoutbtn
+                logo
+                //logoutbtn
         );
 
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
@@ -44,10 +45,12 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         RouterLink listLink = new RouterLink("Public Workspace", ListView.class);
+        //RouterLink uploadData = new RouterLink("Upload", FileUploadView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(
                 listLink
+               // uploadData
         ));
 
     }
