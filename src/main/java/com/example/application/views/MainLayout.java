@@ -45,11 +45,13 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         RouterLink listLink = new RouterLink("Public Workspace", ListView.class);
+        RouterLink dashboardlink = new RouterLink("Dashboard", DashboardView.class);
         //RouterLink uploadData = new RouterLink("Upload", FileUploadView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(
-                listLink
+                listLink,
+                dashboardlink
                // uploadData
         ));
 
