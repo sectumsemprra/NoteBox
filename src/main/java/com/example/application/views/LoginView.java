@@ -10,6 +10,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.router.Router;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.security.PermitAll;
 
@@ -23,6 +25,7 @@ public class LoginView extends Div {
         setSizeFull();
         var username = new TextField("Username");
         var password = new PasswordField("Password");
+        RouterLink reg = new RouterLink("Register", RegisterView.class);
 
         add(
                 new H1("NoteBox"),
@@ -39,7 +42,8 @@ public class LoginView extends Div {
                                 Notification.show("Wrong Credentials");
                             }
                         }
-                        )
+                        ),
+                reg
         );
     }
 

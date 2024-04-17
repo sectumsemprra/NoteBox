@@ -81,6 +81,11 @@ public class AuthService {
 
     }
 
+    public void register(String username, String pass){
+        userRepo.save(new Userr(username, pass, Role.USER));
+        UI.getCurrent().navigate("/");
+    }
+
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){
         var routes = new ArrayList<AuthorizedRoutes>();
 

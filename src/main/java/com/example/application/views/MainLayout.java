@@ -26,12 +26,12 @@ public class MainLayout extends AppLayout {
         H1 logo = new H1("NoteBox");
         logo.addClassNames("text-l", "m-m");
 
-        //Button logoutbtn = new Button("Log out", e->securityService.logout());
+        Button logoutbtn = new Button("Log out", e->LogoutView.logout());
 
         HorizontalLayout header = new HorizontalLayout(
                 new DrawerToggle(),
-                logo
-                //logoutbtn
+                logo,
+                logoutbtn
         );
 
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
