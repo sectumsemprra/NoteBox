@@ -2,6 +2,7 @@ package com.example.application.views;
 
 import com.example.application.services.AuthService;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -18,6 +19,7 @@ import jakarta.annotation.security.PermitAll;
 @Route("/")
 @PageTitle("Login | NoteBox")
 @AnonymousAllowed
+@CssImport("./Login-view.css")
 public class LoginView extends Div {
 
     public LoginView(AuthService authService) {
