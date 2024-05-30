@@ -98,9 +98,9 @@ public class AuthService {
     }*/
 
 
-    public void register(String email, String password) {
-        Userr user = userRepo.save(new Userr(email, password, Role.USER));
-
+    public void register(String username, String password) {
+        Userr user = new Userr(username, password, Role.USER);
+        userRepo.save(user);
     }
 
 }
