@@ -1,5 +1,6 @@
 package com.example.application.views;
 
+import com.example.application.RegisterView;
 import com.example.application.services.AuthService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
@@ -10,6 +11,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.security.PermitAll;
 
@@ -39,7 +41,8 @@ public class LoginView extends Div {
                                 Notification.show("Wrong Credentials");
                             }
                         }
-                        )
+                        ),
+        new RouterLink("Register", RegisterView.class)
         );
     }
 

@@ -1,5 +1,6 @@
 package com.example.application.services;
 
+import com.example.application.RegisterView;
 import com.example.application.data.Userr;
 import com.example.application.data.Role;
 import com.example.application.views.AdminLayout;
@@ -65,6 +66,8 @@ public class AuthService {
                     ListView.class, MainLayout.class);
             configuration.setRoute("/login",
                     LoginView.class);
+            configuration.setRoute("/register", RegisterView.class);
+            configuration.setRoute("/file", FileUploadView.class, MainLayout.class);
         }
         else if(role.equals(Role.ADMIN)){
             configuration.setRoute("/file",
@@ -93,4 +96,11 @@ public class AuthService {
 
         return routes;
     }*/
+
+
+    public void register(String email, String password) {
+        Userr user = userRepo.save(new Userr(email, password, Role.USER));
+
+    }
+
 }

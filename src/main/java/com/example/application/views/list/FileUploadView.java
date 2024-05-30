@@ -1,6 +1,7 @@
 package com.example.application.views.list;
 
 
+import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 
 @AnonymousAllowed
+@Route(value = "file", layout = MainLayout.class)
 public class FileUploadView extends VerticalLayout {
 
     private Grid<String> grid = new Grid<>();
