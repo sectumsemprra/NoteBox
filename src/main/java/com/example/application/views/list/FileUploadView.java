@@ -13,6 +13,7 @@ import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,6 +159,7 @@ public class FileUploadView extends VerticalLayout {
             FileEntity fileEntity = fileService.getFileEntityByTitle(selectedFileTitle);
             fileEntity.setFileContent(newContent);
             fileService.saveFileEntity(fileEntity);
+            Notification.show("Changes saved successfully", 3000, Notification.Position.MIDDLE);
         }
     }
 }
