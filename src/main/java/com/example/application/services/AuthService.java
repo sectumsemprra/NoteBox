@@ -49,6 +49,7 @@ public class AuthService {
                 .forSessionScope();
         configuration.removeRoute("ws");
         configuration.removeRoute("file");
+        configuration.removeRoute("dashboard");
 
         /*RouteConfiguration.forSessionScope().clean();
 

@@ -20,6 +20,7 @@ import jakarta.annotation.security.PermitAll;
 @PageTitle("Login | NoteBox")
 @AnonymousAllowed
 @CssImport("./Login-view.css")
+//@CssImport(value = "./flowcrmtutorial/styles.css")
 public class LoginView extends Div {
 
     public LoginView(AuthService authService) {

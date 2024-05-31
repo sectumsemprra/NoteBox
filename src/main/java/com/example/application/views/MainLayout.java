@@ -24,9 +24,10 @@ public class MainLayout extends AppLayout {
     }
     private void createHeader() {
         H1 logo = new H1("NoteBox");
-        logo.addClassNames("text-l", "m-m");
+        logo.addClassName("logo");
 
         Button logoutbtn = new Button("Log out", e->LogoutView.logout());
+        logoutbtn.addClassName("custom-button-white");
 
         HorizontalLayout header = new HorizontalLayout(
                 new DrawerToggle(),
@@ -37,7 +38,7 @@ public class MainLayout extends AppLayout {
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(logo);
         header.setWidth("100%");
-        header.addClassNames("py-0", "px-m");
+        header.addClassNames("header");
 
         addToNavbar(header);
 
@@ -48,6 +49,8 @@ public class MainLayout extends AppLayout {
         RouterLink dashboardlink = new RouterLink("Dashboard", DashboardView.class);
         //RouterLink uploadData = new RouterLink("Upload", FileUploadView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
+        listLink.setClassName("link");
+        dashboardlink.setClassName("link");
 
         addToDrawer(new VerticalLayout(
                 listLink,

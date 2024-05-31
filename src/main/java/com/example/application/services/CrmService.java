@@ -31,6 +31,10 @@ public class CrmService {
         }
     }
 
+    public List<Contact> getAllContacts() {
+            return contactRepository.findAll();
+    }
+
     public long countContacts() {
         return contactRepository.count();
     }
