@@ -30,18 +30,23 @@ public class RegisterView extends Composite<Component> {
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
 
-        Button sendButton = new Button("Submit", event -> register(
+        Button sendButton = new Button("Send", event -> register(
                 username.getValue(),
                 password1.getValue(),
                 password2.getValue()
         ));
+
+        Button loginButton = new Button("Login", event -> {
+            UI.getCurrent().navigate(LoginView.class);
+        });
 
         VerticalLayout layout = new VerticalLayout(
                 new H2("Register"),
                 username,
                 password1,
                 password2,
-                sendButton
+                sendButton,
+                loginButton
         );
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
         layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
