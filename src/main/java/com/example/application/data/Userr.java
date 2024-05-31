@@ -6,6 +6,7 @@ import org.springframework.util.DigestUtils;
 
 @Entity
 public class Userr extends AbstractPerson {
+  //  public static int userId;
     private String username;
     private String passwordSalt;
     private String passwordHash;

@@ -23,8 +23,8 @@ public class generateData {
             logger.info("Generating demo data");
 
 
-            userRepository.save(new Userr("user", "u", Role.USER));
-            userRepository.save(new Userr("admin", "a", Role.ADMIN));
+           // userRepository.save(new Userr("user", "u", Role.USER));
+            //userRepository.save(new Userr("admin", "a", Role.ADMIN));
 
             logger.info("Generated demo data");
         };

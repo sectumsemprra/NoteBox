@@ -20,6 +20,7 @@ import jakarta.annotation.security.RolesAllowed;
 import java.util.Collections;
 
 @AnonymousAllowed
+@Route("ws")
 public class ListView extends VerticalLayout {
     Grid<Contact> grid = new Grid<>(Contact.class);
     TextField filterText = new TextField();
