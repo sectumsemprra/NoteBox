@@ -1,5 +1,7 @@
 package com.example.application.views.list;
 
+import com.example.application.entity.FileEntity;
+import com.example.application.service.FileService;
 import com.example.application.services.AuthService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -33,10 +35,12 @@ public class FileUploadView extends VerticalLayout {
     private final List<String> fileTitles = new ArrayList<>();
     private final List<String> fileContents = new ArrayList<>();
     private final AuthService authService;
+    private final FileService fileService;
 
     @Autowired
-    public FileUploadView(AuthService authService) {
+    public FileUploadView(AuthService authService, FileService fileService) {
         this.authService = authService;
+        this.fileService = fileService;
 
         // Retrieve the current username
         String username = authService.getCurrentUsername();
@@ -62,8 +66,8 @@ public class FileUploadView extends VerticalLayout {
                 String contents = reader.lines().collect(Collectors.joining("\n"));
                 fileTitles.add(fileName);
                 fileContents.add(contents);
-
-                // FileService.saveFile(fileName, contents);
+                FileEntity fileEntity = new FileEntity(1, fileName, contents);
+                fileService.saveFileEntity(fileEntity);
 
             } catch (Exception e) {
                 e.printStackTrace();

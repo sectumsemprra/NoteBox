@@ -19,8 +19,10 @@ import jakarta.annotation.security.PermitAll;
 @PageTitle("Login | NoteBox")
 @AnonymousAllowed
 public class LoginView extends Div {
+    public AuthService authService;
 
     public LoginView(AuthService authService) {
+        this.authService = authService;
         setId("login-view"); //for css classes
         setSizeFull();
         var username = new TextField("Username");
