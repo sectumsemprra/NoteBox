@@ -13,7 +13,16 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import jakarta.annotation.security.PermitAll;
+import com.example.application.views.RegisterView;
+import com.example.application.services.AuthService;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.H1;
+
+import static com.example.application.services.AuthService.setCurrentUsername;
 
 @Route("/")
 @PageTitle("Login | NoteBox")
@@ -37,6 +46,7 @@ public class LoginView extends Div {
                         event -> {
                             try{
                                 authService.authenticate(username.getValue(), password.getValue());
+                                setCurrentUsername(username.getValue());
                                 Notification.show("back to main");
                                 UI.getCurrent().navigate("/ws");
                             }

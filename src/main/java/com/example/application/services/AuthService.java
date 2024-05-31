@@ -13,6 +13,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ public class AuthService {
 
     }
     private final UserRepository userRepo;
+    public static String currentUserName = "";
    // private final ReminderScheduler reminderScheduler;
     public AuthService(UserRepository user){
         this.userRepo = user;
@@ -39,7 +43,7 @@ public class AuthService {
         Userr userr = userRepo.getByUsername(username);
         if(userr !=null && userr.checkPassword(password)){
             VaadinSession.getCurrent().setAttribute(Userr.class, userr);
-
+            currentUserName = username;
             createRoutes(userr.getRole());
         }
         else{
@@ -90,6 +94,13 @@ public class AuthService {
     public void register(String username, String pass){
         userRepo.save(new Userr(username, pass, Role.USER));
         UI.getCurrent().navigate("/");
+    }
+
+    public static String getCurrentUsername() {
+        return currentUserName;
+    }
+    public static void setCurrentUsername(String name) {
+        currentUserName = name;
     }
 
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){
