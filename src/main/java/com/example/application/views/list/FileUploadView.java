@@ -1,6 +1,6 @@
 package com.example.application.views.list;
 
-
+import com.example.application.services.AuthService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -10,7 +10,11 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,22 +22,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @AnonymousAllowed
 @Route(value = "file", layout = MainLayout.class)
+@SpringComponent
 public class FileUploadView extends VerticalLayout {
 
-    private Grid<String> grid = new Grid<>();
-    private TextArea fileContentTextArea = new TextArea();
+    private final Grid<String> grid = new Grid<>();
+    private final TextArea fileContentTextArea = new TextArea();
 
-    private List<String> fileTitles = new ArrayList<>();
-    private List<String> fileContents = new ArrayList<>();
+    private final List<String> fileTitles = new ArrayList<>();
+    private final List<String> fileContents = new ArrayList<>();
+    private final AuthService authService;
 
-    public FileUploadView() {
+    @Autowired
+    public FileUploadView(AuthService authService) {
+        this.authService = authService;
+
+        // Retrieve the current username
+        String username = authService.getCurrentUsername();
+
+        // Create a Span to display the username
+        Span usernameSpan = new Span("Logged in as: " + username);
+        usernameSpan.getStyle().set("margin-left", "auto");
+
+        // Create the layout for the header
+        HorizontalLayout headerLayout = new HorizontalLayout();
+        headerLayout.setWidthFull();
+        headerLayout.add(usernameSpan);
+
+        // File upload setup
         MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
-
 
         upload.addSucceededListener(event -> {
             String fileName = event.getFileName();
@@ -43,7 +63,7 @@ public class FileUploadView extends VerticalLayout {
                 fileTitles.add(fileName);
                 fileContents.add(contents);
 
-                //FileService.saveFile(fileName, contents);
+                // FileService.saveFile(fileName, contents);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -74,13 +94,11 @@ public class FileUploadView extends VerticalLayout {
         grid.setWidth("40%");
         fileContentTextArea.setWidth("60%");
 
-        add(upload, contentLayout);
+        // Add the header layout and other components to the view
+        add(headerLayout, upload, contentLayout);
     }
 
     private void refreshGrid() {
         grid.setItems(fileTitles);
     }
-
-
-
 }

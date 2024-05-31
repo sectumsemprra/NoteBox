@@ -13,6 +13,9 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.VaadinSession;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,6 +40,8 @@ public class AuthService {
         Userr userr = userRepo.getByUsername(username);
         if(userr !=null && userr.checkPassword(password)){
             VaadinSession.getCurrent().setAttribute(Userr.class, userr);
+            //VaadinSession.getCurrent().setAttribute("username", userr.getUsername());
+
             createRoutes(userr.getRole());
         }
         else{
@@ -102,5 +107,17 @@ public class AuthService {
         Userr user = new Userr(username, password, Role.USER);
         userRepo.save(user);
     }
+    public String getCurrentUsername() {
+        VaadinSession session = VaadinSession.getCurrent();
+        if (session != null) {
+            String username = (String) session.getAttribute("username");
+            return username;
+        } else {
+            // Handle null session gracefully
+            return null;
+        }
+    }
+
+
 
 }
