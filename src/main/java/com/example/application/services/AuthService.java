@@ -1,6 +1,6 @@
 package com.example.application.services;
 
-import com.example.application.RegisterView;
+import com.example.application.views.RegisterView;
 import com.example.application.data.Userr;
 import com.example.application.data.Role;
 import com.example.application.views.AdminLayout;

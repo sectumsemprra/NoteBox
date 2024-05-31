@@ -1,4 +1,4 @@
-package com.example.application;
+package com.example.application.views;
 
 import com.example.application.services.AuthService;
 import com.vaadin.flow.component.Component;
