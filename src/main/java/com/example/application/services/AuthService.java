@@ -32,6 +32,7 @@ public class AuthService {
 
     }
     private final UserRepository userRepo;
+    public static String currentUserName = "";
     public AuthService(UserRepository user){
         this.userRepo = user;
     }
@@ -41,7 +42,7 @@ public class AuthService {
         if(userr !=null && userr.checkPassword(password)){
             VaadinSession.getCurrent().setAttribute(Userr.class, userr);
             //VaadinSession.getCurrent().setAttribute("username", userr.getUsername());
-
+            currentUserName = username;
             createRoutes(userr.getRole());
         }
         else{
@@ -107,16 +108,13 @@ public class AuthService {
         Userr user = new Userr(username, password, Role.USER);
         userRepo.save(user);
     }
-    public String getCurrentUsername() {
-        VaadinSession session = VaadinSession.getCurrent();
-        if (session != null) {
-            String username = (String) session.getAttribute("username");
-            return username;
-        } else {
-            // Handle null session gracefully
-            return null;
-        }
+    public static String getCurrentUsername() {
+       return currentUserName;
     }
+    public static void setCurrentUsername(String name) {
+         currentUserName = name;
+    }
+
 
 
 

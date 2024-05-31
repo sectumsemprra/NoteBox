@@ -17,6 +17,8 @@ public class FileEntity {
     public String fileTitle;
     public String fileContent;
     public String username;
+    public FileEntity() {
+    }
 
     public FileEntity(int userId, String fileTitle, String fileContent) {
         this.fileContent = fileContent;

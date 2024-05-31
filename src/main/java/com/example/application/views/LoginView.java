@@ -15,6 +15,8 @@ import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.security.PermitAll;
 
+import static com.example.application.services.AuthService.setCurrentUsername;
+
 @Route("/")
 @PageTitle("Login | NoteBox")
 @AnonymousAllowed
@@ -36,6 +38,7 @@ public class LoginView extends Div {
                         event -> {
                             try{
                                 authService.authenticate(username.getValue(), password.getValue());
+                                setCurrentUsername(username.getValue());
                                 Notification.show("back to main");
                                 UI.getCurrent().navigate("/ws");
                             }

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.application.services.AuthService.getCurrentUsername;
+
 @AnonymousAllowed
 @Route(value = "file", layout = MainLayout.class)
 @SpringComponent
@@ -43,7 +45,7 @@ public class FileUploadView extends VerticalLayout {
         this.fileService = fileService;
 
         // Retrieve the current username
-        String username = authService.getCurrentUsername();
+        String username = getCurrentUsername();
 
         // Create a Span to display the username
         Span usernameSpan = new Span("Logged in as: " + username);
@@ -58,6 +60,13 @@ public class FileUploadView extends VerticalLayout {
         MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
+
+        List<FileEntity> existingFiles = fileService.getFileEntities(); // Implement this method in FileService
+        existingFiles.forEach(file -> {
+            fileTitles.add(file.getFileTitle());
+            fileContents.add(file.getFileContent());
+        });
+        refreshGrid();
 
         upload.addSucceededListener(event -> {
             String fileName = event.getFileName();
