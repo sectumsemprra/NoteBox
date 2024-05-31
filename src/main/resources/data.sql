@@ -1,9 +1,22 @@
+create table "STATUS"
+(
+    ID      int          not null,
+    VERSION int          not null,
+    NAME    varchar(255) not null
+);
 INSERT INTO "STATUS" (ID, VERSION, NAME) VALUES
 (1, 1, 'Imported lead'),
 (2, 1, 'Not contacted'),
 (3, 1, 'Contacted'),
 (4, 1, 'Customer'),
 (5, 1, 'Closed (lost)');
+
+create table "COMPANY"
+(
+    ID      int          not null,
+    VERSION int          not null,
+    NAME    varchar(255) not null
+);
 INSERT INTO "COMPANY" (ID, VERSION, NAME) VALUES
 (6, 1, 'Phillips Van Heusen Corp.'),
 (7, 1, 'Avaya Inc.'),
@@ -35,7 +48,17 @@ INSERT INTO "CONTACT" (ID, VERSION, EMAIL,FIRST_NAME,LAST_NAME,COMPANY_ID,STATUS
 (32, 1, 'bobby.pearson@ib.kg', 'Bobby', 'Pearson', 9, 1),
 (33, 1, 'larry.ciappi@ba.lk', 'Larry', 'Ciappi', 10, 2),
 (34, 1, 'ronnie.salucci@tohhij.lv', 'Ronnie', 'Salucci', 9, 1),
-(35, 1, 'walter.grossi@tuvo.sa', 'Walter', 'Grossi', 9, 1);      
+(35, 1, 'walter.grossi@tuvo.sa', 'Walter', 'Grossi', 9, 1);
+create table "CONTACT"
+(
+    ID         int          not null,
+    VERSION    int          not null,
+    EMAIL      varchar(255) not null,
+    FIRST_NAME varchar(255) not null,
+    LAST_NAME  varchar(255) not null,
+    COMPANY_ID int          not null,
+    STATUS_ID  int          not null
+);
 INSERT INTO "CONTACT" (ID, VERSION, EMAIL,FIRST_NAME,LAST_NAME,COMPANY_ID,STATUS_ID) VALUES
 (36, 1, 'frances.koopmans@foga.tw', 'Frances', 'Koopmans', 7, 5),
 (37, 1, 'frances.fujimoto@uswuzzub.jp', 'Frances', 'Fujimoto', 6, 5),

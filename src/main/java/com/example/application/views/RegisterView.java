@@ -1,26 +1,27 @@
-package com.example.application;
 
+package com.example.application.views;
 import com.example.application.services.AuthService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-@AnonymousAllowed
+
 @Route("register")
+@PageTitle("Register | Notebox")
 public class RegisterView extends Composite {
 
-    private final AuthService authService;
-
+    private final AuthService authServicee;
     public RegisterView(AuthService authService) {
-        this.authService = authService;
+        this.authServicee = authService;
     }
 
     @Override
@@ -33,13 +34,14 @@ public class RegisterView extends Composite {
                 username,
                 password1,
                 password2,
-                new Button("Send", event -> register(
+                new Button("Send", event-> register(
                         username.getValue(),
                         password1.getValue(),
                         password2.getValue()
                 ))
         );
     }
+
 
     private void register(String username, String password1, String password2) {
         if (username.trim().isEmpty()) {
@@ -49,7 +51,7 @@ public class RegisterView extends Composite {
         } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
         } else {
-            authService.register(username, password1);
+            authServicee.register(username, password1);
             //suserService.saveSUser(suser);
 
             Notification.show("Registered");
@@ -57,3 +59,4 @@ public class RegisterView extends Composite {
         }
     }
 }
+

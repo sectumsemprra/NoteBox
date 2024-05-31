@@ -1,8 +1,8 @@
 package com.example.application.views;
 
-import com.example.application.RegisterView;
 import com.example.application.services.AuthService;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -18,6 +18,8 @@ import jakarta.annotation.security.PermitAll;
 @Route("/")
 @PageTitle("Login | NoteBox")
 @AnonymousAllowed
+@CssImport("./Login-view.css")
+//@CssImport(value = "./flowcrmtutorial/styles.css")
 public class LoginView extends Div {
 
     public LoginView(AuthService authService) {
@@ -25,6 +27,7 @@ public class LoginView extends Div {
         setSizeFull();
         var username = new TextField("Username");
         var password = new PasswordField("Password");
+        RouterLink reg = new RouterLink("Register", RegisterView.class);
 
         add(
                 new H1("NoteBox"),
@@ -42,7 +45,7 @@ public class LoginView extends Div {
                             }
                         }
                         ),
-        new RouterLink("Register", RegisterView.class)
+                new RouterLink("Register", RegisterView.class)
         );
     }
 

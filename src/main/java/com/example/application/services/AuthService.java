@@ -1,6 +1,5 @@
 package com.example.application.services;
 
-import com.example.application.RegisterView;
 import com.example.application.data.Userr;
 import com.example.application.data.Role;
 import com.example.application.views.AdminLayout;
@@ -54,6 +53,7 @@ public class AuthService {
                 .forSessionScope();
         configuration.removeRoute("ws");
         configuration.removeRoute("file");
+        configuration.removeRoute("dashboard");
 
         /*RouteConfiguration.forSessionScope().clean();
 
@@ -70,7 +70,6 @@ public class AuthService {
                     ListView.class, MainLayout.class);
             configuration.setRoute("/login",
                     LoginView.class);
-            configuration.setRoute("/register", RegisterView.class);
             configuration.setRoute("/file", FileUploadView.class, MainLayout.class);
         }
         else if(role.equals(Role.ADMIN)){
@@ -88,6 +87,11 @@ public class AuthService {
 
     }
 
+    public void register(String username, String pass){
+        userRepo.save(new Userr(username, pass, Role.USER));
+        UI.getCurrent().navigate("/");
+    }
+
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){
         var routes = new ArrayList<AuthorizedRoutes>();
 
@@ -100,11 +104,5 @@ public class AuthService {
 
         return routes;
     }*/
-
-
-    public void register(String username, String password) {
-        Userr user = new Userr(username, password, Role.USER);
-        userRepo.save(user);
-    }
 
 }
