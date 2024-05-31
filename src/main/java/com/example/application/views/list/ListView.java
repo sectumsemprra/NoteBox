@@ -93,7 +93,7 @@ public class ListView extends VerticalLayout {
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Institute");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
-        //grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+        grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
 
         /*grid.addColumn(list -> list.get(0)).setHeader("");
         grid.addColumn(list -> list.get(1)).setHeader("");

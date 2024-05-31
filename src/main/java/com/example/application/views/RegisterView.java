@@ -1,8 +1,9 @@
-package com.example.application.views;
 
+package com.example.application.views;
 import com.example.application.services.AuthService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,21 +17,18 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @Route("register")
 @PageTitle("Register | Notebox")
-@AnonymousAllowed
 public class RegisterView extends Composite {
 
-    private final AuthService authService;
-
-    public RegisterView(AuthService authService){
-        this.authService= authService;
+    private final AuthService authServicee;
+    public RegisterView(AuthService authService) {
+        this.authServicee = authService;
     }
+
     @Override
-    protected Component initContent(){
+    protected Component initContent() {
         TextField username = new TextField("Username");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
-
-
         return new VerticalLayout(
                 new H2("Register"),
                 username,
@@ -44,19 +42,21 @@ public class RegisterView extends Composite {
         );
     }
 
-    private void register(String username, String pass1, String pass2){
-        if(username.isEmpty()){
-            Notification.show("Enter a username!");
-        }
-        else if(pass1.isEmpty()){
-            Notification.show("Enter a password!");
-        }
-        else if(!pass1.equals(pass2)){
+
+    private void register(String username, String password1, String password2) {
+        if (username.trim().isEmpty()) {
+            Notification.show("Enter a username");
+        } else if (password1.isEmpty()) {
+            Notification.show("Enter a password");
+        } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
-        }
-        else {
-            authService.register(username, pass1);
-            Notification.show("Registration successful");
+        } else {
+            authServicee.register(username, password1);
+            //suserService.saveSUser(suser);
+
+            Notification.show("Registered");
+            UI.getCurrent().navigate("/");
         }
     }
 }
+

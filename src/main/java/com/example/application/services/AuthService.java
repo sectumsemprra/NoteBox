@@ -66,6 +66,7 @@ public class AuthService {
                     ListView.class, MainLayout.class);
             configuration.setRoute("/login",
                     LoginView.class);
+            configuration.setRoute("/file", FileUploadView.class, MainLayout.class);
         }
         else if(role.equals(Role.ADMIN)){
             configuration.setRoute("/file",
@@ -99,4 +100,5 @@ public class AuthService {
 
         return routes;
     }*/
+
 }

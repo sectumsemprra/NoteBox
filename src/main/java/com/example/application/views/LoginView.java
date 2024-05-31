@@ -11,7 +11,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.router.Router;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import jakarta.annotation.security.PermitAll;
@@ -46,7 +45,7 @@ public class LoginView extends Div {
                             }
                         }
                         ),
-                reg
+                new RouterLink("Register", RegisterView.class)
         );
     }
 

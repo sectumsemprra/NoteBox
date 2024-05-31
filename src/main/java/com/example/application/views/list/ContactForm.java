@@ -49,8 +49,8 @@ public class ContactForm extends FormLayout {
         add(firstName,
                 lastName,
                 email,
-                company,
-                status,
+                //company,
+                //status,
                 createButtonsLayout());
     }
 
