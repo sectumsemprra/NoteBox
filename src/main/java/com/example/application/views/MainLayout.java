@@ -12,13 +12,16 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
-
+import com.example.application.services.NotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 public class MainLayout extends AppLayout {
 
     private SecurityService securityService;
-    public MainLayout(SecurityService securityService)
+    private NotificationService notificationService;
+    public MainLayout(SecurityService securityService,NotificationService notificationService)
     {
         this.securityService = securityService;
+        this.notificationService = notificationService;
         createHeader();
         createDrawer();
     }
