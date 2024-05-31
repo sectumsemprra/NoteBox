@@ -159,7 +159,7 @@ public class FileUploadView extends VerticalLayout {
             FileEntity fileEntity = fileService.getFileEntityByTitle(selectedFileTitle);
             fileEntity.setFileContent(newContent);
             fileService.saveFileEntity(fileEntity);
-            Notification.show("Changes saved successfully", 3000, Notification.Position.MIDDLE);
+            Notification.show("Changes saved successfully", 2000, Notification.Position.MIDDLE);
         }
     }
 }
