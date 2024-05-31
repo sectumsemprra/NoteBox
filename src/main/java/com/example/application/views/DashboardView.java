@@ -76,22 +76,22 @@ public class DashboardView extends HorizontalLayout {
         layout.add(addButton);
         LocalDateTime tasktime = null;
         // Retrieve previously saved tasks from the service
-            if(istask) {
-                List<Task> tasks = taskService.getTasksByUsername(); // Assuming getTasksByTitle() retrieves tasks by title from the service
-                for (Task task : tasks) {
-                    HorizontalLayout taskLayout = createTask(task.getTaskName(), color, showDateTimePicker, tasktime);
-                    layout.add(taskLayout);
-                }
+        if(istask) {
+            List<Task> tasks = taskService.getTasksByUsername(); // Assuming getTasksByTitle() retrieves tasks by title from the service
+            for (Task task : tasks) {
+                HorizontalLayout taskLayout = createTask(task.getTaskName(), color, showDateTimePicker, tasktime);
+                layout.add(taskLayout);
             }
-          else {
-                List<Reminder> reminders = reminderService.getReminderByUsername();
+        }
+        else {
+            List<Reminder> reminders = reminderService.getReminderByUsername();
 
-                for (Reminder reminder : reminders) {
-                    System.out.println(reminder.getReminderName());
-                    HorizontalLayout reminderLayout = createTask(reminder.getReminderName(), color, showDateTimePicker, reminder.getReminderTime());
-                    layout.add(reminderLayout);
-                }
+            for (Reminder reminder : reminders) {
+                System.out.println(reminder.getReminderName());
+                HorizontalLayout reminderLayout = createTask(reminder.getReminderName(), color, showDateTimePicker, reminder.getReminderTime());
+                layout.add(reminderLayout);
             }
+        }
         // Add initial items if available from the service
         //service.getItems(title).forEach(item -> layout.add(createTask(item, color, showDateTimePicker)));
 
