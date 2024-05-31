@@ -7,6 +7,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,7 +16,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @AnonymousAllowed
 @Route("register")
-public class RegisterView extends Composite {
+public class RegisterView extends Composite<Component> {
 
     private final AuthService authService;
 
@@ -28,17 +29,24 @@ public class RegisterView extends Composite {
         TextField username = new TextField("Username");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
-        return new VerticalLayout(
+
+        Button sendButton = new Button("Submit", event -> register(
+                username.getValue(),
+                password1.getValue(),
+                password2.getValue()
+        ));
+
+        VerticalLayout layout = new VerticalLayout(
                 new H2("Register"),
                 username,
                 password1,
                 password2,
-                new Button("Send", event -> register(
-                        username.getValue(),
-                        password1.getValue(),
-                        password2.getValue()
-                ))
+                sendButton
         );
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        return layout;
     }
 
     private void register(String username, String password1, String password2) {
