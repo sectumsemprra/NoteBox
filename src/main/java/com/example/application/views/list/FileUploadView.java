@@ -12,7 +12,6 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -33,11 +32,13 @@ public class FileUploadView extends VerticalLayout {
 
     private final Grid<String> grid = new Grid<>();
     private final TextArea fileContentTextArea = new TextArea();
+    private final Button deleteButton = new Button("Delete Selected File");
 
     private final List<String> fileTitles = new ArrayList<>();
     private final List<String> fileContents = new ArrayList<>();
     private final AuthService authService;
     private final FileService fileService;
+    private String selectedFileTitle;
 
     @Autowired
     public FileUploadView(AuthService authService, FileService fileService) {
@@ -88,10 +89,22 @@ public class FileUploadView extends VerticalLayout {
         grid.addSelectionListener(event -> {
             String selectedTitle = event.getFirstSelectedItem().orElse(null);
             if (selectedTitle != null) {
+                selectedFileTitle = selectedTitle;
                 int index = fileTitles.indexOf(selectedTitle);
                 if (index >= 0 && index < fileContents.size()) {
                     fileContentTextArea.setValue(fileContents.get(index));
                 }
+            } else {
+                selectedFileTitle = null;
+                fileContentTextArea.clear();
+            }
+        });
+
+        deleteButton.addClickListener(e -> {
+            if (selectedFileTitle != null) {
+                deleteSelectedFile();
+            } else {
+                System.out.println("No file selected to delete.");
             }
         });
 
@@ -108,10 +121,23 @@ public class FileUploadView extends VerticalLayout {
         fileContentTextArea.setWidth("60%");
 
         // Add the header layout and other components to the view
-        add(headerLayout, upload, contentLayout);
+        add(headerLayout, upload, contentLayout, deleteButton);
     }
 
     private void refreshGrid() {
         grid.setItems(fileTitles);
+    }
+
+    private void deleteSelectedFile() {
+        int index = fileTitles.indexOf(selectedFileTitle);
+        if (index >= 0) {
+            fileTitles.remove(index);
+            fileContents.remove(index);
+            FileEntity fileEntity = fileService.getFileEntityByTitle(selectedFileTitle);
+            fileService.deleteFileEntity(fileEntity.getId());
+            selectedFileTitle = null;
+            fileContentTextArea.clear();
+            refreshGrid();
+        }
     }
 }

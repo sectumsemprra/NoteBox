@@ -7,4 +7,5 @@ import java.io.File;
 
 public interface FileRepository extends JpaRepository<FileEntity, Integer> {
     FileEntity findByUsername(String username);
+    FileEntity findByfileTitle(String title);
 }

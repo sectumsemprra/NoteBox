@@ -30,6 +30,11 @@ public class FileService {
     {
         return fileRepository.findById(id).orElse(null);
     }
+    public FileEntity getFileEntityByTitle(String title)
+    {
+        return fileRepository.findByfileTitle(title);
+    }
+
 
     public FileEntity getFileEntityByUsername(String username)
     {
