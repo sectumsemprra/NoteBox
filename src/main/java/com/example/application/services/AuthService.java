@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 public class AuthService {
 
@@ -28,14 +29,17 @@ public class AuthService {
 
     }
     private final UserRepository userRepo;
+   // private final ReminderScheduler reminderScheduler;
     public AuthService(UserRepository user){
         this.userRepo = user;
+        //this.reminderScheduler=reminderScheduler;
     }
 
     public void authenticate(String username, String password) throws AuthException{
         Userr userr = userRepo.getByUsername(username);
         if(userr !=null && userr.checkPassword(password)){
             VaadinSession.getCurrent().setAttribute(Userr.class, userr);
+
             createRoutes(userr.getRole());
         }
         else{
