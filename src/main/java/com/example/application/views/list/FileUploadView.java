@@ -33,6 +33,7 @@ public class FileUploadView extends VerticalLayout {
     private final Grid<String> grid = new Grid<>();
     private final TextArea fileContentTextArea = new TextArea();
     private final Button deleteButton = new Button("Delete Selected File");
+    private final Button saveButton = new Button("Save Changes");
 
     private final List<String> fileTitles = new ArrayList<>();
     private final List<String> fileContents = new ArrayList<>();
@@ -108,6 +109,14 @@ public class FileUploadView extends VerticalLayout {
             }
         });
 
+        saveButton.addClickListener(e -> {
+            if (selectedFileTitle != null) {
+                saveFileContent();
+            } else {
+                System.out.println("No file selected to save.");
+            }
+        });
+
         HorizontalLayout contentLayout = new HorizontalLayout(grid, fileContentTextArea);
         contentLayout.setWidthFull(); // Make the layout fill the available width
 
@@ -121,7 +130,7 @@ public class FileUploadView extends VerticalLayout {
         fileContentTextArea.setWidth("60%");
 
         // Add the header layout and other components to the view
-        add(headerLayout, upload, contentLayout, deleteButton);
+        add(headerLayout, upload, contentLayout, new HorizontalLayout(deleteButton, saveButton));
     }
 
     private void refreshGrid() {
@@ -138,6 +147,17 @@ public class FileUploadView extends VerticalLayout {
             selectedFileTitle = null;
             fileContentTextArea.clear();
             refreshGrid();
+        }
+    }
+
+    private void saveFileContent() {
+        int index = fileTitles.indexOf(selectedFileTitle);
+        if (index >= 0) {
+            String newContent = fileContentTextArea.getValue();
+            fileContents.set(index, newContent);
+            FileEntity fileEntity = fileService.getFileEntityByTitle(selectedFileTitle);
+            fileEntity.setFileContent(newContent);
+            fileService.saveFileEntity(fileEntity);
         }
     }
 }
