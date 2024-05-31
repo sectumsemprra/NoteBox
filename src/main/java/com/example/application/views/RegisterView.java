@@ -30,7 +30,7 @@ public class RegisterView extends Composite<Component> {
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
 
-        Button sendButton = new Button("Send", event -> register(
+        Button sendButton = new Button("Submit", event -> register(
                 username.getValue(),
                 password1.getValue(),
                 password2.getValue()
