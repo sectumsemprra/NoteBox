@@ -62,15 +62,8 @@ public class AuthService {
         configuration.removeRoute("file");
         configuration.removeRoute("dashboard");
 
-        /*RouteConfiguration.forSessionScope().clean();
 
-        getAuthorizedRoutes(role).forEach(
-                route-> RouteConfiguration.forSessionScope().setRoute(
-                        route.route, route.views, MainLayout.class
-                )
-        );*/
         Notification.show("matched");
-
 
         if(role.equals(Role.USER)){
             configuration.setRoute("/ws",
@@ -83,11 +76,6 @@ public class AuthService {
             configuration.setRoute("/ws",
                     ListView.class, AdminLayout.class);
         }
-
-        //configuration.setAnnotatedRoute(ListView.class);
-
-        //UI.getCurrent().getPage().reload();
-
     }
 
     public void register(String username, String pass){

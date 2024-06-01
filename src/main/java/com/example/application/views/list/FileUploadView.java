@@ -33,7 +33,7 @@ import static com.example.application.services.AuthService.getCurrentUsername;
 
 @AnonymousAllowed
 @Route(value = "file", layout = MainLayout.class)
-@SpringComponent
+
 public class FileUploadView extends VerticalLayout {
 
     private final Grid<String> grid = new Grid<>();
@@ -47,12 +47,12 @@ public class FileUploadView extends VerticalLayout {
     private final FileService fileService;
     private String selectedFileTitle;
 
-    @Autowired
+
     public FileUploadView(AuthService authService, FileService fileService) {
         this.authService = authService;
         this.fileService = fileService;
 
-        System.out.println("okkkkk");
+        System.out.println("FIle upload created");
         String username = "";
         Object obj = null;
         // Retrieve the current username

@@ -22,6 +22,7 @@ import com.example.application.services.AuthService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H1;
 
+import static com.example.application.services.AuthService.getCurrentUsername;
 import static com.example.application.services.AuthService.setCurrentUsername;
 
 @Route("/login")
@@ -31,6 +32,8 @@ import static com.example.application.services.AuthService.setCurrentUsername;
 public class LoginView extends Div {
 
     public LoginView(AuthService authService) {
+        System.out.println("login created");
+
         setId("login-view"); //for css classes
         setSizeFull();
         var username = new TextField("Username");
@@ -46,6 +49,8 @@ public class LoginView extends Div {
                             try{
                                 authService.authenticate(username.getValue(), password.getValue());
                                 setCurrentUsername(username.getValue());
+                                Notification.show("Welcome" + getCurrentUsername());
+
                                 UI.getCurrent().navigate("/ws");
                             }
                             catch(AuthService.AuthException e){
