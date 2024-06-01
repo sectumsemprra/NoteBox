@@ -46,6 +46,8 @@ public class FileUploadView extends VerticalLayout {
     private final AuthService authService;
     private final FileService fileService;
     private String selectedFileTitle;
+    private final String  finalUsername;
+
 
 
     public FileUploadView(AuthService authService, FileService fileService) {
@@ -77,6 +79,7 @@ public class FileUploadView extends VerticalLayout {
         // Create a Span to display the username
         Span usernameSpan = new Span("Logged in as: " + username);
         usernameSpan.getStyle().set("margin-left", "auto");
+        finalUsername = username;
 
         // Create the layout for the header
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -88,7 +91,7 @@ public class FileUploadView extends VerticalLayout {
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
 
-        List<FileEntity> existingFiles = fileService.getFileEntities(); // Implement this method in FileService
+        List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username); // Implement this method in FileService
         existingFiles.forEach(file -> {
             fileTitles.add(file.getFileTitle());
             fileContents.add(file.getFileContent());
@@ -100,9 +103,11 @@ public class FileUploadView extends VerticalLayout {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(buffer.getInputStream(fileName)));
                 String contents = reader.lines().collect(Collectors.joining("\n"));
+                String us = finalUsername;
                 fileTitles.add(fileName);
                 fileContents.add(contents);
-                FileEntity fileEntity = new FileEntity(1, fileName, contents);
+                FileEntity fileEntity = new FileEntity(1, fileName, contents, us);
+
                 fileService.saveFileEntity(fileEntity);
 
             } catch (Exception e) {

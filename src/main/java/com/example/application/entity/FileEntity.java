@@ -20,10 +20,11 @@ public class FileEntity {
     public FileEntity() {
     }
 
-    public FileEntity(int userId, String fileTitle, String fileContent) {
+    public FileEntity(int userId, String fileTitle, String fileContent, String username) {
         this.fileContent = fileContent;
         this.userId = userId;
         this.fileTitle = fileTitle;
+        this.username = username;
     }
 
     public int getId() {
