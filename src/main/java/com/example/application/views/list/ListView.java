@@ -11,6 +11,7 @@ import com.example.application.services.CrmService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -30,6 +31,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,9 @@ public class ListView extends VerticalLayout {
     //Grid<Contact> grid = new Grid<>();
     Grid<FileEntity> grid = new Grid<>();
     TextField filterText = new TextField();
-    ContactForm form;
+    ComboBox<String> filterOptions = new ComboBox<>();
+
+    FileForm form;
     CrmService service;
     ContactRepository cr;
 
@@ -49,6 +53,7 @@ public class ListView extends VerticalLayout {
     AuthService authService;
     FileRepository fileRepository;
     public String currentUsername;
+    public FileEntity currentFileEntity;
 
     public ListView(CrmService service, FileService fileService, AuthService authService) {
         this.service = service;
@@ -91,9 +96,18 @@ public class ListView extends VerticalLayout {
     }
     private void closeEditor()
     {
-        form.setContact(null);
+        form.setFileEntity(null);
         form.setVisible(false);
         removeClassNames("editing");
+    }
+    private void addToPersonal()
+    {
+        currentFileEntity.inDashboard = true;
+        currentFileEntity.username = currentUsername;
+        Userr temp = authService.findByUsername(currentUsername);
+        currentFileEntity.userId = temp.getId();
+        fileService.updateFileEntity(currentFileEntity);
+        Notification.show("Added Successfully");
     }
 
     private Component getContent() {
@@ -106,24 +120,26 @@ public class ListView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
+        form = new FileForm(service.findAllCompanies(), service.findAllStatuses());
         form.setWidth("25em");
 
-        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
-        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
-        form.addListener(ContactForm.CloseEvent.class, e -> closeEditor());
+//        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
+//        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
+        form.addListener(FileForm.CloseEvent.class, e -> closeEditor());
+
+        form.addListener(FileForm.AddToPersonalEvent.class, e -> addToPersonal());
     }
     private void saveContact(ContactForm.SaveEvent event)
     {
-        service.saveContact(event.getContact());
-        updateList();
-        closeEditor();
+//        service.saveContact(event.getContact());
+//        updateList();
+//        closeEditor();
     }
     private void deleteContact(ContactForm.DeleteEvent event)
     {
-        service.deleteContact(event.getContact());
-        updateList();
-        closeEditor();
+//        service.deleteContact(event.getContact());
+//        updateList();
+//        closeEditor();
     }
 
 
@@ -153,7 +169,8 @@ public class ListView extends VerticalLayout {
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Institute");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
-     //   grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+        grid.asSingleSelect().addValueChangeListener(e -> editFileForm(e.getValue()));
+
 
         /*grid.addColumn(list -> list.get(0)).setHeader("");
         grid.addColumn(list -> list.get(1)).setHeader("");
@@ -184,7 +201,7 @@ public class ListView extends VerticalLayout {
         name.addClassName("product-name");
 
         Div description = new Div();
-        description.setText(user.getUsername());
+        description.setText(user.getUserInstitute());
         description.addClassName("product-description");
 
         VerticalLayout tile = new VerticalLayout();
@@ -204,27 +221,42 @@ public class ListView extends VerticalLayout {
     }
 
     private void editContact(Contact contact) {
-        if(contact == null)
-        {
-            closeEditor();
+//        if(contact == null)
+//        {
+//            closeEditor();
+//        }else{
+//            form.setContact(contact);
+//            form.setVisible(true);
+//            addClassName("editing");
+//        }
+    }
+    private void editFileForm(FileEntity fileEntity) {
+        if(fileEntity == null)
+        {   closeEditor();
         }else{
-            form.setContact(contact);
+            form.setFileEntity(fileEntity);
             form.setVisible(true);
+            currentFileEntity = fileEntity;
+
             addClassName("editing");
         }
     }
 
     private HorizontalLayout getToolbar() {
-        filterText.setPlaceholder("Filter by username...");
+        filterText.setPlaceholder("username/institute");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
+
+
+        filterOptions.setItems("username", "institute");
+        filterOptions.setPlaceholder("Select filter");
 
         Button addContactButton = new Button("Add notes");
         addContactButton.addClickListener(e -> addNotes());
         addContactButton.addClassName("custom-button-black");
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
+        HorizontalLayout toolbar = new HorizontalLayout(filterOptions, filterText, addContactButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -242,9 +274,6 @@ public class ListView extends VerticalLayout {
 
 
         Userr cuser = authService.findByUsername(currentUsername);
-
-
-
 
         FileBuffer fileBuffer = new FileBuffer();
         Upload upload = new Upload(fileBuffer);
@@ -269,6 +298,8 @@ public class ListView extends VerticalLayout {
                 }
                 FileEntity fileEntity = new FileEntity(id,title, content , user);
                 fileEntity.inPublicWorkspace = true;
+                fileEntity.setUserInstitute(cuser.getInstitute());
+                fileEntity.setUploadDate(LocalDateTime.now());
                 fileService.saveFileEntity(fileEntity);
                 updateList();
                 dialog.close();
@@ -285,7 +316,7 @@ public class ListView extends VerticalLayout {
 
 
     private void updateList() {
-        if(filterText.getValue() == null || filterText.getValue().isEmpty()) {
+        if(filterText.getValue() == null || filterText.getValue().isEmpty() || filterOptions.isEmpty()) {
 
             List<FileEntity> temp = fileService.getFileEntities();
             List<FileEntity> toAdd = new ArrayList<>();
@@ -295,18 +326,31 @@ public class ListView extends VerticalLayout {
                 }
             }
             grid.setItems(toAdd);
-
-          //  grid.setItems(fileService.getFileEntities());
         }
         else {
-            List<FileEntity> temp = fileService.getFileEntityByUsername(filterText.getValue());
-            List<FileEntity> toAdd = new ArrayList<>();
-            for (FileEntity entity : temp) {
-                if (entity.inPublicWorkspace) {
-                    toAdd.add(entity);
+
+            String filterType = filterOptions.getValue();
+            if(filterType.equals("username")) {
+                List<FileEntity> temp = fileService.getFileEntityByUsername(filterText.getValue());
+                List<FileEntity> toAdd = new ArrayList<>();
+                for (FileEntity entity : temp) {
+                    if (entity.inPublicWorkspace) {
+                        toAdd.add(entity);
+                    }
                 }
+                grid.setItems(toAdd);
             }
-            grid.setItems(toAdd);
+            else if (filterType.equals("institute")){
+                List<FileEntity> temp = fileService.getFileEntityByUserInstitute(filterText.getValue());
+                List<FileEntity> toAdd = new ArrayList<>();
+                for (FileEntity entity : temp) {
+                    if (entity.inPublicWorkspace) {
+                        toAdd.add(entity);
+                    }
+                }
+                grid.setItems(toAdd);
+            }
+
         }
     }
 }

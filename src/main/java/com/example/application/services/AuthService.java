@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.server.VaadinSession;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -80,8 +81,10 @@ public class AuthService {
         }
     }
 
-    public void register(String username, String pass){
-        userRepo.save(new Userr(username, pass, Role.USER));
+    public void register(String username, String pass, String institute){
+        Userr userr = new Userr(username, pass, Role.USER);
+        userr.setInstitute(institute);
+        userRepo.save(userr);
         UI.getCurrent().navigate("/");
     }
 
