@@ -14,6 +14,9 @@ import com.vaadin.flow.router.HighlightConditions;
 import com.vaadin.flow.router.RouterLink;
 import com.example.application.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static com.example.application.services.AuthService.setCurrentUsername;
+
 public class MainLayout extends AppLayout {
 
     private SecurityService securityService;
@@ -48,6 +51,11 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
+
+        System.out.println("Main layout created");
+
+        setCurrentUsername("lala");
+        System.out.println("Instantiation links");
         RouterLink listLink = new RouterLink("Public Workspace", ListView.class);
         RouterLink dashboardlink = new RouterLink("Dashboard", DashboardView.class);
         RouterLink fileUploadLink = new RouterLink("File Upload", FileUploadView.class);

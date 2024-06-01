@@ -36,7 +36,7 @@ public class FileService {
     }
 
 
-    public FileEntity getFileEntityByUsername(String username)
+    public List<FileEntity> getFileEntityByUsername(String username)
     {
         return fileRepository.findByUsername(username);
     }

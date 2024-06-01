@@ -46,6 +46,8 @@ public class AuthService {
             Notification.show(username + " has logged in");
             VaadinSession.getCurrent().getSession().setAttribute("username", username);
             VaadinServletService.getCurrentServletRequest().getSession().setAttribute("name", username);
+
+
             currentUserName = username;
             createRoutes(userr.getRole());
         }
@@ -62,15 +64,8 @@ public class AuthService {
         configuration.removeRoute("file");
         configuration.removeRoute("dashboard");
 
-        /*RouteConfiguration.forSessionScope().clean();
 
-        getAuthorizedRoutes(role).forEach(
-                route-> RouteConfiguration.forSessionScope().setRoute(
-                        route.route, route.views, MainLayout.class
-                )
-        );*/
         Notification.show("matched");
-
 
         if(role.equals(Role.USER)){
             configuration.setRoute("/ws",
@@ -83,11 +78,6 @@ public class AuthService {
             configuration.setRoute("/ws",
                     ListView.class, AdminLayout.class);
         }
-
-        //configuration.setAnnotatedRoute(ListView.class);
-
-        //UI.getCurrent().getPage().reload();
-
     }
 
     public void register(String username, String pass){
@@ -100,6 +90,10 @@ public class AuthService {
     }
     public static void setCurrentUsername(String name) {
         currentUserName = name;
+    }
+    public Userr findByUsername(String currentUserName)
+    {
+        return userRepo.getByUsername(currentUserName);
     }
 
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){

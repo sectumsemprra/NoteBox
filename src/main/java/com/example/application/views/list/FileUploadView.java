@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import static com.example.application.services.AuthService.getCurrentUsername;
 
 @AnonymousAllowed
 @Route(value = "file", layout = MainLayout.class)
-@SpringComponent
+
 public class FileUploadView extends VerticalLayout {
 
     private final Grid<String> grid = new Grid<>();
@@ -46,17 +47,22 @@ public class FileUploadView extends VerticalLayout {
     private final AuthService authService;
     private final FileService fileService;
     private String selectedFileTitle;
+    private final String  finalUsername;
+    private final int  finalUserid;
 
-    @Autowired
+
+
+
     public FileUploadView(AuthService authService, FileService fileService) {
         this.authService = authService;
         this.fileService = fileService;
 
-        System.out.println("okkkkk");
+        System.out.println("FIle upload created");
         String username = "";
         Object obj = null;
         // Retrieve the current username
         VaadinSession vaadinsession = VaadinSession.getCurrent();
+
         if (vaadinsession != null) {
             //Notification.show("okkkk");
             // Retrieve the attribute
@@ -77,6 +83,9 @@ public class FileUploadView extends VerticalLayout {
         // Create a Span to display the username
         Span usernameSpan = new Span("Logged in as: " + username);
         usernameSpan.getStyle().set("margin-left", "auto");
+        finalUsername = username;
+        Userr userr = authService.findByUsername(finalUsername);
+        finalUserid = userr.getId();
 
         // Create the layout for the header
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -88,10 +97,13 @@ public class FileUploadView extends VerticalLayout {
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
 
-        List<FileEntity> existingFiles = fileService.getFileEntities(); // Implement this method in FileService
+        List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username); // Implement this method in FileService
         existingFiles.forEach(file -> {
-            fileTitles.add(file.getFileTitle());
-            fileContents.add(file.getFileContent());
+            if(file.inDashboard) {
+                fileTitles.add(file.getFileTitle());
+                fileContents.add(file.getFileContent());
+            }
+
         });
         refreshGrid();
 
@@ -100,9 +112,12 @@ public class FileUploadView extends VerticalLayout {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(buffer.getInputStream(fileName)));
                 String contents = reader.lines().collect(Collectors.joining("\n"));
+                String us = finalUsername;
+
                 fileTitles.add(fileName);
                 fileContents.add(contents);
-                FileEntity fileEntity = new FileEntity(1, fileName, contents);
+                FileEntity fileEntity = new FileEntity(finalUserid, fileName, contents, us);
+                fileEntity.inDashboard = true;
                 fileService.saveFileEntity(fileEntity);
 
             } catch (Exception e) {
