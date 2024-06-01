@@ -99,8 +99,11 @@ public class FileUploadView extends VerticalLayout {
 
         List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username); // Implement this method in FileService
         existingFiles.forEach(file -> {
-            fileTitles.add(file.getFileTitle());
-            fileContents.add(file.getFileContent());
+            if(file.inDashboard) {
+                fileTitles.add(file.getFileTitle());
+                fileContents.add(file.getFileContent());
+            }
+
         });
         refreshGrid();
 
@@ -114,7 +117,7 @@ public class FileUploadView extends VerticalLayout {
                 fileTitles.add(fileName);
                 fileContents.add(contents);
                 FileEntity fileEntity = new FileEntity(finalUserid, fileName, contents, us);
-
+                fileEntity.inDashboard = true;
                 fileService.saveFileEntity(fileEntity);
 
             } catch (Exception e) {

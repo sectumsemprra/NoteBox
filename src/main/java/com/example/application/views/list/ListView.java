@@ -30,6 +30,8 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Route(value ="/ws")
@@ -134,7 +136,16 @@ public class ListView extends VerticalLayout {
 
 
         //grid.setItems(cr.getAll());
-        grid.setItems(fileService.getFileEntities());
+        //grid.setItems(fileService.getFileEntities());
+
+        List<FileEntity> temp = fileService.getFileEntities();
+        List<FileEntity> toAdd = new ArrayList<>();
+        for (FileEntity entity : temp) {
+            if (entity.inPublicWorkspace) {
+                toAdd.add(entity);
+            }
+        }
+        grid.setItems(toAdd);
 
 
         //grid.setColumns("firstName", "lastName", "email");
@@ -257,6 +268,7 @@ public class ListView extends VerticalLayout {
                     throw new RuntimeException(e);
                 }
                 FileEntity fileEntity = new FileEntity(id,title, content , user);
+                fileEntity.inPublicWorkspace = true;
                 fileService.saveFileEntity(fileEntity);
                 updateList();
                 dialog.close();
@@ -273,10 +285,28 @@ public class ListView extends VerticalLayout {
 
 
     private void updateList() {
-        if(filterText.getValue() == null || filterText.getValue().isEmpty())
-            grid.setItems(fileService.getFileEntities());
+        if(filterText.getValue() == null || filterText.getValue().isEmpty()) {
+
+            List<FileEntity> temp = fileService.getFileEntities();
+            List<FileEntity> toAdd = new ArrayList<>();
+            for (FileEntity entity : temp) {
+                if (entity.inPublicWorkspace) {
+                    toAdd.add(entity);
+                }
+            }
+            grid.setItems(toAdd);
+
+          //  grid.setItems(fileService.getFileEntities());
+        }
         else {
-            grid.setItems(fileService.getFileEntityByUsername(filterText.getValue()));
+            List<FileEntity> temp = fileService.getFileEntityByUsername(filterText.getValue());
+            List<FileEntity> toAdd = new ArrayList<>();
+            for (FileEntity entity : temp) {
+                if (entity.inPublicWorkspace) {
+                    toAdd.add(entity);
+                }
+            }
+            grid.setItems(toAdd);
         }
     }
 }
