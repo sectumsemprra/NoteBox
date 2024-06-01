@@ -254,6 +254,8 @@ public class ListView extends VerticalLayout {
                 .setError(new UploadI18N.Error().setTooManyFiles("You can only upload one file")));
 
         Button uploadButton = new Button("Upload", event -> {
+            Notification.show("reached upload");
+
             String title = fileTitle.getValue();
             String description = fileDescription.getValue();
 

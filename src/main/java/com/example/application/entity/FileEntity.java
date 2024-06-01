@@ -17,6 +17,7 @@ public class FileEntity {
     public String username;
     public String fileTitle;
     public String fileContent;
+    public byte[] content;
     public boolean inDashboard = false;
     public boolean inPublicWorkspace = false;
 
