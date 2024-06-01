@@ -17,6 +17,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @Route("register")
 @PageTitle("Register | Notebox")
+@AnonymousAllowed
 public class RegisterView extends Composite {
 
     private final AuthService authServicee;

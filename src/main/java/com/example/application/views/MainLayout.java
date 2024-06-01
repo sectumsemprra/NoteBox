@@ -56,6 +56,7 @@ public class MainLayout extends AppLayout {
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
         listLink.setClassName("link");
         dashboardlink.setClassName("link");
+        fileUploadLink.setClassName("link");
 
         addToDrawer(new VerticalLayout(
                 listLink,

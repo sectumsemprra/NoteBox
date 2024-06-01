@@ -1,5 +1,6 @@
 package com.example.application.views.list;
 
+import com.example.application.data.Userr;
 import com.example.application.entity.FileEntity;
 import com.example.application.service.FileService;
 import com.example.application.services.AuthService;
@@ -14,8 +15,12 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinServletService;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
@@ -47,8 +52,27 @@ public class FileUploadView extends VerticalLayout {
         this.authService = authService;
         this.fileService = fileService;
 
+        System.out.println("okkkkk");
+        String username = "";
+        Object obj = null;
         // Retrieve the current username
-        String username = getCurrentUsername();
+        VaadinSession vaadinsession = VaadinSession.getCurrent();
+        if (vaadinsession != null) {
+            //Notification.show("okkkk");
+            // Retrieve the attribute
+            obj =  vaadinsession.getSession().getAttribute("username");
+        }
+
+        /*VaadinServletRequest vsr = VaadinServletRequest.getCurrent();
+        if (vsr != null) {
+            //Notification.show("okkkk");
+            obj = vsr.getSession().getAttribute("name");
+        }*/
+       //else Notification.show("NOT BEING STORED");
+
+        if(obj instanceof String){
+            username = (String) obj;
+        }
 
         // Create a Span to display the username
         Span usernameSpan = new Span("Logged in as: " + username);

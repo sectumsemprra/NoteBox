@@ -24,10 +24,9 @@ import com.vaadin.flow.component.html.H1;
 
 import static com.example.application.services.AuthService.setCurrentUsername;
 
-@Route("/")
+@Route("/login")
 @PageTitle("Login | NoteBox")
 @AnonymousAllowed
-@CssImport("./Login-view.css")
 //@CssImport(value = "./flowcrmtutorial/styles.css")
 public class LoginView extends Div {
 
@@ -47,7 +46,6 @@ public class LoginView extends Div {
                             try{
                                 authService.authenticate(username.getValue(), password.getValue());
                                 setCurrentUsername(username.getValue());
-                                Notification.show("back to main");
                                 UI.getCurrent().navigate("/ws");
                             }
                             catch(AuthService.AuthException e){
