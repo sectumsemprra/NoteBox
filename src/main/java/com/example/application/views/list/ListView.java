@@ -1,9 +1,11 @@
 package com.example.application.views.list;
 
 import com.example.application.data.Contact;
+import com.example.application.data.Userr;
 import com.example.application.entity.FileEntity;
 import com.example.application.repository.FileRepository;
 import com.example.application.service.FileService;
+import com.example.application.services.AuthService;
 import com.example.application.services.ContactRepository;
 import com.example.application.services.CrmService;
 import com.vaadin.flow.component.Component;
@@ -23,6 +25,7 @@ import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
 
@@ -41,11 +44,39 @@ public class ListView extends VerticalLayout {
     ContactRepository cr;
 
     FileService fileService;
+    AuthService authService;
     FileRepository fileRepository;
+    public String currentUsername;
 
-    public ListView(CrmService service, FileService fileService) {
+    public ListView(CrmService service, FileService fileService, AuthService authService) {
         this.service = service;
         this.fileService = fileService;
+        this.authService = authService;
+
+
+        String username = "";
+        Object obj = null;
+        // Retrieve the current username
+        VaadinSession vaadinsession = VaadinSession.getCurrent();
+
+        if (vaadinsession != null) {
+            //Notification.show("okkkk");
+            // Retrieve the attribute
+            obj =  vaadinsession.getSession().getAttribute("username");
+        }
+
+        /*VaadinServletRequest vsr = VaadinServletRequest.getCurrent();
+        if (vsr != null) {
+            //Notification.show("okkkk");
+            obj = vsr.getSession().getAttribute("name");
+        }*/
+        //else Notification.show("NOT BEING STORED");
+
+        if(obj instanceof String){
+            username = (String) obj;
+        }
+        currentUsername = username;
+
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -196,8 +227,13 @@ public class ListView extends VerticalLayout {
         VerticalLayout dialogLayout = new VerticalLayout();
 
         TextField fileTitle = new TextField("File Title");
-        TextField username = new TextField("Username");
-        TextField userId = new TextField("User ID");
+        TextField fileDescription = new TextField("File Description");
+
+
+        Userr cuser = authService.findByUsername(currentUsername);
+
+
+
 
         FileBuffer fileBuffer = new FileBuffer();
         Upload upload = new Upload(fileBuffer);
@@ -208,17 +244,19 @@ public class ListView extends VerticalLayout {
 
         Button uploadButton = new Button("Upload", event -> {
             String title = fileTitle.getValue();
-            String user = username.getValue();
-            String id = userId.getValue();
+            String description = fileDescription.getValue();
 
-            if (fileBuffer.getInputStream() != null && !title.isEmpty() && !user.isEmpty() && !id.isEmpty()) {
+            String user = cuser.getUsername();
+            int id = cuser.getId();
+
+            if (fileBuffer.getInputStream() != null && !title.isEmpty()) {
                 String content = null;
                 try {
                     content = new String(fileBuffer.getInputStream().readAllBytes());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                FileEntity fileEntity = new FileEntity(1,title,content , user);
+                FileEntity fileEntity = new FileEntity(id,title, content , user);
                 fileService.saveFileEntity(fileEntity);
                 updateList();
                 dialog.close();
@@ -228,7 +266,7 @@ public class ListView extends VerticalLayout {
             }
         });
 
-        dialogLayout.add(fileTitle, username, userId, upload, uploadButton);
+        dialogLayout.add(fileTitle, fileDescription, upload, uploadButton);
         dialog.add(dialogLayout);
         dialog.open();
     }
