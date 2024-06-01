@@ -53,6 +53,7 @@ public class ListView extends VerticalLayout {
     AuthService authService;
     FileRepository fileRepository;
     public String currentUsername;
+    public FileEntity currentFileEntity;
 
     public ListView(CrmService service, FileService fileService, AuthService authService) {
         this.service = service;
@@ -99,6 +100,15 @@ public class ListView extends VerticalLayout {
         form.setVisible(false);
         removeClassNames("editing");
     }
+    private void addToPersonal()
+    {
+        currentFileEntity.inDashboard = true;
+        currentFileEntity.username = currentUsername;
+        Userr temp = authService.findByUsername(currentUsername);
+        currentFileEntity.userId = temp.getId();
+        fileService.updateFileEntity(currentFileEntity);
+        Notification.show("Added Successfully");
+    }
 
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
@@ -116,6 +126,8 @@ public class ListView extends VerticalLayout {
 //        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
 //        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
         form.addListener(FileForm.CloseEvent.class, e -> closeEditor());
+
+        form.addListener(FileForm.AddToPersonalEvent.class, e -> addToPersonal());
     }
     private void saveContact(ContactForm.SaveEvent event)
     {
@@ -158,6 +170,7 @@ public class ListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
         grid.asSingleSelect().addValueChangeListener(e -> editFileForm(e.getValue()));
+
 
         /*grid.addColumn(list -> list.get(0)).setHeader("");
         grid.addColumn(list -> list.get(1)).setHeader("");
@@ -219,10 +232,12 @@ public class ListView extends VerticalLayout {
     }
     private void editFileForm(FileEntity fileEntity) {
         if(fileEntity == null)
-        {            closeEditor();
+        {   closeEditor();
         }else{
             form.setFileEntity(fileEntity);
             form.setVisible(true);
+            currentFileEntity = fileEntity;
+
             addClassName("editing");
         }
     }

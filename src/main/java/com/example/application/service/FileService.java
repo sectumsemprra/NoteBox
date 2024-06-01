@@ -53,9 +53,18 @@ public class FileService {
     public FileEntity updateFileEntity( FileEntity fileEntity)
     {
         FileEntity existing = fileRepository.findById(fileEntity.getId()).orElse(null);
+        fileRepository.delete(fileEntity);
         existing.setFileTitle(fileEntity.getFileTitle());
         existing.setFileContent(fileEntity.getFileContent());
         existing.setUsername(fileEntity.getUsername());
+        existing.setUploadDate(fileEntity.uploadDate);
+        existing.setUserInstitute(fileEntity.userInstitute);
+        existing.setId(fileEntity.getId());
+        existing.inPublicWorkspace = fileEntity.inPublicWorkspace;;
+        existing.inDashboard = fileEntity.inDashboard;
+        existing.userId = fileEntity.getUserId();
+
+
         return fileRepository.save(existing);
     }
 
