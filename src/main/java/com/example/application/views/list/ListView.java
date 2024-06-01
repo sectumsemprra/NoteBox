@@ -1,6 +1,9 @@
 package com.example.application.views.list;
 
 import com.example.application.data.Contact;
+import com.example.application.entity.FileEntity;
+import com.example.application.repository.FileRepository;
+import com.example.application.service.FileService;
 import com.example.application.services.ContactRepository;
 import com.example.application.services.CrmService;
 import com.vaadin.flow.component.Component;
@@ -25,15 +28,18 @@ import org.apache.catalina.webresources.FileResource;
 public class ListView extends VerticalLayout {
     //Grid<Contact> grid = new Grid<>(Contact.class);
     //Grid<Contact> grid = new Grid<>();
-    Grid<Contact> grid = new Grid<>();
+    Grid<FileEntity> grid = new Grid<>();
     TextField filterText = new TextField();
     ContactForm form;
     CrmService service;
-
     ContactRepository cr;
 
-    public ListView(CrmService service) {
+    FileService fileService;
+    FileRepository fileRepository;
+
+    public ListView(CrmService service, FileService fileService) {
         this.service = service;
+        this.fileService = fileService;
         addClassName("list-view");
         setSizeFull();
         configureGrid();
@@ -91,7 +97,7 @@ public class ListView extends VerticalLayout {
 
 
         //grid.setItems(cr.getAll());
-        grid.setItems(service.getAllContacts());
+        grid.setItems(fileService.getFileEntities());
 
 
         //grid.setColumns("firstName", "lastName", "email");
@@ -99,7 +105,7 @@ public class ListView extends VerticalLayout {
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Institute");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
-        grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+     //   grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
 
         /*grid.addColumn(list -> list.get(0)).setHeader("");
         grid.addColumn(list -> list.get(1)).setHeader("");
@@ -117,20 +123,24 @@ public class ListView extends VerticalLayout {
 
     }
 
-    private VerticalLayout createUserTile(Contact user) {
-        Image image = new Image("images/notes-icon.png", user.getFirstName());
+    private VerticalLayout createUserTile(FileEntity user) {
+        Image image = new Image("images/notes-icon.png", user.getUsername());
         image.addClassName("product-image");
 
+        Div title = new Div();
+        title.setText(user.getFileTitle());
+        title.addClassName("product-name");
+
         Div name = new Div();
-        name.setText(user.getFirstName() + " " + user.getLastName());
+        name.setText(user.getUsername() + " " + user.getUserId());
         name.addClassName("product-name");
 
         Div description = new Div();
-        description.setText(user.getCompany().getName());
+        description.setText(user.getUsername());
         description.addClassName("product-description");
 
         VerticalLayout tile = new VerticalLayout();
-        tile.add(name, description);
+        tile.add(title, name, description);
         tile.setSpacing(false);
         tile.setPadding(false);
         //tile.setAlignItems(Alignment.CENTER);

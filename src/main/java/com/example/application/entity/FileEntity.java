@@ -14,9 +14,10 @@ public class FileEntity {
     @GeneratedValue
     public int id;
     public int userId;
+    public String username;
     public String fileTitle;
     public String fileContent;
-    public String username;
+
     public FileEntity() {
     }
 
