@@ -1,6 +1,5 @@
 package com.example.application.services;
 
-import com.example.application.views.RegisterView;
 import com.example.application.data.Userr;
 import com.example.application.data.Role;
 import com.example.application.views.AdminLayout;
@@ -12,14 +11,16 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteConfiguration;
+import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.server.VaadinSession;
+import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 public class AuthService {
@@ -33,15 +34,18 @@ public class AuthService {
     }
     private final UserRepository userRepo;
     public static String currentUserName = "";
+   // private final ReminderScheduler reminderScheduler;
     public AuthService(UserRepository user){
         this.userRepo = user;
+        //this.reminderScheduler=reminderScheduler;
     }
 
     public void authenticate(String username, String password) throws AuthException{
         Userr userr = userRepo.getByUsername(username);
         if(userr !=null && userr.checkPassword(password)){
-            VaadinSession.getCurrent().setAttribute(Userr.class, userr);
-            //VaadinSession.getCurrent().setAttribute("username", userr.getUsername());
+            Notification.show(username + " has logged in");
+            VaadinSession.getCurrent().getSession().setAttribute("username", username);
+            VaadinServletService.getCurrentServletRequest().getSession().setAttribute("name", username);
             currentUserName = username;
             createRoutes(userr.getRole());
         }
@@ -56,6 +60,7 @@ public class AuthService {
                 .forSessionScope();
         configuration.removeRoute("ws");
         configuration.removeRoute("file");
+        configuration.removeRoute("dashboard");
 
         /*RouteConfiguration.forSessionScope().clean();
 
@@ -70,9 +75,6 @@ public class AuthService {
         if(role.equals(Role.USER)){
             configuration.setRoute("/ws",
                     ListView.class, MainLayout.class);
-            configuration.setRoute("/login",
-                    LoginView.class);
-            configuration.setRoute("/register", RegisterView.class);
             configuration.setRoute("/file", FileUploadView.class, MainLayout.class);
         }
         else if(role.equals(Role.ADMIN)){
@@ -80,14 +82,24 @@ public class AuthService {
                     FileUploadView.class, AdminLayout.class);
             configuration.setRoute("/ws",
                     ListView.class, AdminLayout.class);
-            configuration.setRoute("/login",
-                    LoginView.class);
         }
 
         //configuration.setAnnotatedRoute(ListView.class);
 
         //UI.getCurrent().getPage().reload();
 
+    }
+
+    public void register(String username, String pass){
+        userRepo.save(new Userr(username, pass, Role.USER));
+        UI.getCurrent().navigate("/");
+    }
+
+    public static String getCurrentUsername() {
+        return currentUserName;
+    }
+    public static void setCurrentUsername(String name) {
+        currentUserName = name;
     }
 
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){
@@ -102,20 +114,5 @@ public class AuthService {
 
         return routes;
     }*/
-
-
-    public void register(String username, String password) {
-        Userr user = new Userr(username, password, Role.USER);
-        userRepo.save(user);
-    }
-    public static String getCurrentUsername() {
-       return currentUserName;
-    }
-    public static void setCurrentUsername(String name) {
-         currentUserName = name;
-    }
-
-
-
 
 }

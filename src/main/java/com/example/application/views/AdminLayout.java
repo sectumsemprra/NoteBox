@@ -45,10 +45,12 @@ public class AdminLayout extends AppLayout {
     private void createDrawer() {
         RouterLink listLink = new RouterLink("Public Workspace", ListView.class);
         RouterLink uploadData = new RouterLink("Upload", FileUploadView.class);
+        RouterLink dashboardlink = new RouterLink("Dashboard", DashboardView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(
                 listLink,
+                dashboardlink,
                 uploadData
         ));
 

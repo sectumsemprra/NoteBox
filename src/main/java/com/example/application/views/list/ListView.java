@@ -1,31 +1,36 @@
 package com.example.application.views.list;
 
 import com.example.application.data.Contact;
-import com.example.application.data.Role;
+import com.example.application.services.ContactRepository;
 import com.example.application.services.CrmService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import jakarta.annotation.security.PermitAll;
-import jakarta.annotation.security.RolesAllowed;
+import org.apache.catalina.webresources.FileResource;
 
-import java.util.Collections;
 
+@Route(value ="/ws")
 @AnonymousAllowed
-@Route("ws")
 public class ListView extends VerticalLayout {
-    Grid<Contact> grid = new Grid<>(Contact.class);
+    //Grid<Contact> grid = new Grid<>(Contact.class);
+    //Grid<Contact> grid = new Grid<>();
+    Grid<Contact> grid = new Grid<>();
     TextField filterText = new TextField();
     ContactForm form;
     CrmService service;
+
+    ContactRepository cr;
 
     public ListView(CrmService service) {
         this.service = service;
@@ -35,9 +40,8 @@ public class ListView extends VerticalLayout {
         configureForm();
 
         add(getToolbar(), getContent());
-        updateList();
+        //updateList();
         closeEditor();
-
 
     }
     private void closeEditor()
@@ -79,14 +83,66 @@ public class ListView extends VerticalLayout {
 
 
     private void configureGrid() {
-        grid.addClassNames("contact-grid");
+        //grid.addClassNames("product-tile");
         grid.setSizeFull();
-        grid.setColumns("firstName", "lastName", "email");
-        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
+
+        grid.addComponentColumn(this::createUserTile).setHeader("Users");
+        //grid.addComponentColumn(this::createUserTile).setHeader("");
+
+
+        //grid.setItems(cr.getAll());
+        grid.setItems(service.getAllContacts());
+
+
+        //grid.setColumns("firstName", "lastName", "email");
+        /*egrid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Institute");
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
         grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+
+        /*grid.addColumn(list -> list.get(0)).setHeader("");
+        grid.addColumn(list -> list.get(1)).setHeader("");
+
+        ArrayList<String> ar = new ArrayList<>();
+        ar.add("moushi");
+        ar.add("please work grid");
+
+        grid.setItems(ar);*/
+
+        //grid.addComponentColumn(tiles::new).setHeader("Users");
+        //grid.setItems(service.getAllContacts());
+        //grid.addComponentColumn(item -> tile);
+        //grid.addColumn(tiles::new);
+
+    }
+
+    private VerticalLayout createUserTile(Contact user) {
+        Image image = new Image("images/notes-icon.png", user.getFirstName());
+        image.addClassName("product-image");
+
+        Div name = new Div();
+        name.setText(user.getFirstName() + " " + user.getLastName());
+        name.addClassName("product-name");
+
+        Div description = new Div();
+        description.setText(user.getCompany().getName());
+        description.addClassName("product-description");
+
+        VerticalLayout tile = new VerticalLayout();
+        tile.add(name, description);
+        tile.setSpacing(false);
+        tile.setPadding(false);
+        //tile.setAlignItems(Alignment.CENTER);
+
+        HorizontalLayout outer = new HorizontalLayout();
+        outer.add(image, tile);
+
+        VerticalLayout v = new VerticalLayout();
+        v.add(outer);
+        v.addClassName("product-tile");
+
+        return v;
     }
 
     private void editContact(Contact contact) {
@@ -106,8 +162,9 @@ public class ListView extends VerticalLayout {
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
 
-        Button addContactButton = new Button("Add contact");
+        Button addContactButton = new Button("Add notes");
         addContactButton.addClickListener(e -> addContact());
+        addContactButton.addClassName("custom-button-black");
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
         toolbar.addClassName("toolbar");
@@ -120,6 +177,6 @@ public class ListView extends VerticalLayout {
     }
 
     private void updateList() {
-        grid.setItems(service.findAllContacts(filterText.getValue()));
+        //grid.setItems(service.findAllContacts(filterText.getValue()));
     }
 }

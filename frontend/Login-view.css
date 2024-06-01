@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Jeju+Myeongjo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Javanese+Text&display=swap');
+
+#login-view {
+    display: grid;
+    padding: 1%;
+}
+
+.mainbg{
+    background: #b6b6b6;
+}
+
+:host {
+    display: block;
+    padding-top: var(--lumo-space-m);
+    padding-right: var(--lumo-space-l);
+    padding-left: var(--lumo-space-l);
+    padding-bottom: var(--lumo-space-m);
+}
+
+.logo{
+    font-family: 'Jeju Myeongjo', serif;
+    color: #cccccc;
+}
+
+/* styles.css */
+
+/* Style for custom button */
+.custom-button-white {
+    background-color: #adaaaa; /* Green background */
+    color: #000000; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* Remove default text underline */
+    display: inline-block; /* Display inline-block */
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margin */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition-duration: 0.4s; /* Transition duration for hover effect */
+    font-family: 'Jeju Myeongjo', serif;
+}
+
+.vaadin-drawer-toggle{
+
+}
+
+vaadin-app-layout::part(drawer){
+    background: #312f2f;
+}
+
+vaadin-drawer-toggle::part(icon)::before{
+    color: #cccccc;
+}
+
+/* Hover effect */
+.custom-button-white:hover {
+    background-color: white; /* White background */
+    color: black; /* Black text */
+    border: 2px solid #939292; /* Green border */
+}
+
+.custom-button-black {
+    background-color: #181818; /* Green background */
+    color: #cbc3c3; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* Remove default text underline */
+    display: inline-block; /* Display inline-block */
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margin */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition-duration: 0.4s; /* Transition duration for hover effect */
+    font-family: 'Jeju Myeongjo', serif;
+}
+
+/* Hover effect */
+.custom-button-black:hover {
+    background-color: #070505; /* White background */
+    color: #cbc3c3; /* Black text */
+    border: 2px solid #2a2828; /* Green border */
+}
+
+.link{
+    color: #cccccc;
+    font-family: 'Jeju Myeongjo', serif;
+}
+
+/*.header{
+    background: black;
+    padding: 20px;
+}*/
+
+.product-tile {
+    display: flex;
+    flex-direction: column;
+    #align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background-color: #d2d0d0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+}
+
+.product-image {
+    width: 100px;
+    height: 100px;
+    background: #cccccc
+}
+
+.product-name {
+    font-family: 'Jockey One', serif;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.product-description {
+    font-family: 'Jockey One', serif;
+    margin-top: 5px;
+}
+
+/* shared-styles.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 50px;
+    background-color: #313030;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.nav-bar span,
+.nav-bar button {
+    margin: 10px;
+    font-size: 16px;
+    font-family: 'Jeju Myeongjo', serif;
+    color: #939292;
+}
+
+.hero-section {
+    background-image: url('E:/coding/2-2 project practice/NoteBox-main/frontend/paper.jpg');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    /*background: #5d5d5d;*/
+    background-size: cover;
+    color: white;
+    text-align: center;
+
+}
+
+.hero-text {
+    color: #cccccc;
+    padding: 20px;
+    border-radius: 5px;
+    font-family: 'Jockey One', serif;
+}
+
+.span-text{
+    color: #cccccc;
+    padding: 20px;
+    font-family: 'Javanese Text', serif;
+}
+
+.hero-text-h1 {
+    margin: 0;
+    font-size: 40px;
+    color: #181818;
+    border-radius: 5px;
+    font-family: 'Jockey One', serif;
+}
+
+.hero-text-span {
+    color: #181818;
+    padding: 20px;
+    font-family: 'Javanese Text', serif;
+}
+
+.content-section {
+    background-image: url('E:/coding/2-2 project practice/NoteBox-main/frontend/takingnote.jpg');
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 100px;
+    background-color: #f9f9f9;
+}
+
+.content-box {
+    background: white;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    text-align: center;
+}
+
+.content-box-h1 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.content-box-span {
+    margin: 20px 0;
+    display: block;
+    font-size: 16px;
+}
+
+.content-box-button {
+    margin-top: 10px;
+}
+
+.footer{
+    background: #313030;
+}
+
+.footer-text{
+    color: #cccccc;
+    font-family: 'Jeju Myeongjo', serif;
+}
