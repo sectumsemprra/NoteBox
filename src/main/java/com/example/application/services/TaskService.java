@@ -22,16 +22,17 @@ public class TaskService {
 
     public void add_task(String s)
     {
-        Userr userr = VaadinSession.getCurrent().getAttribute(Userr.class);
-        Task t = new Task(userr.getUsername(), s);
+        String username=AuthService.currentUserName;
+        Task t = new Task(username, s);
         taskRepository.save(t);
     }
 
 
 
     public List<Task> getTasksByUsername() {
-        Userr userr = VaadinSession.getCurrent().getAttribute(Userr.class);
-        String username = userr.getUsername();
+
+        System.out.println("laa1");
+        String username=AuthService.currentUserName;
         return taskRepository.findByUsername(username);
     }
 
