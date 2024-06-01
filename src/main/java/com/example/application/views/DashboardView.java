@@ -120,7 +120,6 @@ public class DashboardView extends HorizontalLayout {
     private void openAddTaskDialog(VerticalLayout layout, String color, boolean showDateTimePicker) {
         Dialog dialog = new Dialog();
         TextField taskField = new TextField("Task");
-
         // Initialize DateTimePicker for reminders
         DateTimePicker reminderPicker = new DateTimePicker();
         reminderPicker.setLabel("Reminder Time");

@@ -8,6 +8,7 @@ import org.springframework.util.DigestUtils;
 public class Userr extends AbstractPerson {
   //  public static int userId;
     private String username;
+    private String institute;
     private String passwordSalt;
     private String passwordHash;
     private Role role;
@@ -41,6 +42,8 @@ public class Userr extends AbstractPerson {
     public void setRole(Role role) {
         this.role = role;
     }
+    public void setInstitute(String institute){ this.institute = institute;}
+
 
     public String getPasswordHash() {
         return passwordHash;
@@ -53,6 +56,7 @@ public class Userr extends AbstractPerson {
     public String getUsername() {
         return username;
     }
+    public String getInstitute(){return institute;}
 
     public void setUsername(String username) {
         this.username = username;

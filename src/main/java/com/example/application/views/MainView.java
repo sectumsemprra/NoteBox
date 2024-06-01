@@ -38,7 +38,7 @@ public class MainView extends VerticalLayout {
         login.addClickListener(e -> UI.getCurrent().navigate("/login"));
         Button signup = new Button("Sign Up");
         signup.addClassName("custom-button-white");
-        signup.addClickListener(e -> UI.getCurrent().navigate("/login"));
+        signup.addClickListener(e -> UI.getCurrent().navigate("/register"));
 
         navBar.add(login, signup);
         header.add(logo, navBar);
