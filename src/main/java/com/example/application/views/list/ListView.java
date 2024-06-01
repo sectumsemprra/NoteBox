@@ -9,18 +9,24 @@ import com.example.application.services.CrmService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.UploadI18N;
+import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
+
+import java.io.IOException;
 
 
 @Route(value ="/ws")
@@ -173,7 +179,7 @@ public class ListView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         Button addContactButton = new Button("Add notes");
-        addContactButton.addClickListener(e -> addContact());
+        addContactButton.addClickListener(e -> addNotes());
         addContactButton.addClassName("custom-button-black");
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
@@ -185,6 +191,48 @@ public class ListView extends VerticalLayout {
         grid.asSingleSelect().clear();
         editContact(new Contact());
     }
+    private void addNotes() {
+        Dialog dialog = new Dialog();
+        VerticalLayout dialogLayout = new VerticalLayout();
+
+        TextField fileTitle = new TextField("File Title");
+        TextField username = new TextField("Username");
+        TextField userId = new TextField("User ID");
+
+        FileBuffer fileBuffer = new FileBuffer();
+        Upload upload = new Upload(fileBuffer);
+        upload.setAcceptedFileTypes("text/plain");
+        upload.setI18n(new UploadI18N().setDropFiles(new UploadI18N.DropFiles().setOne("Drop file here"))
+                .setAddFiles(new UploadI18N.AddFiles().setOne("Upload file"))
+                .setError(new UploadI18N.Error().setTooManyFiles("You can only upload one file")));
+
+        Button uploadButton = new Button("Upload", event -> {
+            String title = fileTitle.getValue();
+            String user = username.getValue();
+            String id = userId.getValue();
+
+            if (fileBuffer.getInputStream() != null && !title.isEmpty() && !user.isEmpty() && !id.isEmpty()) {
+                String content = null;
+                try {
+                    content = new String(fileBuffer.getInputStream().readAllBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                FileEntity fileEntity = new FileEntity(1,title,content , user);
+                fileService.saveFileEntity(fileEntity);
+                updateList();
+                dialog.close();
+                Notification.show("File uploaded successfully");
+            } else {
+                Notification.show("All fields are required", 3000, Notification.Position.MIDDLE);
+            }
+        });
+
+        dialogLayout.add(fileTitle, username, userId, upload, uploadButton);
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
 
     private void updateList() {
         if(filterText.getValue() == null || filterText.getValue().isEmpty())
