@@ -11,6 +11,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteConfiguration;
+import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
@@ -42,7 +43,9 @@ public class AuthService {
     public void authenticate(String username, String password) throws AuthException{
         Userr userr = userRepo.getByUsername(username);
         if(userr !=null && userr.checkPassword(password)){
-            VaadinSession.getCurrent().setAttribute(Userr.class, userr);
+            Notification.show(username + " has logged in");
+            VaadinSession.getCurrent().getSession().setAttribute("username", username);
+            VaadinServletService.getCurrentServletRequest().getSession().setAttribute("name", username);
             currentUserName = username;
             createRoutes(userr.getRole());
         }
@@ -72,8 +75,6 @@ public class AuthService {
         if(role.equals(Role.USER)){
             configuration.setRoute("/ws",
                     ListView.class, MainLayout.class);
-            configuration.setRoute("/login",
-                    LoginView.class);
             configuration.setRoute("/file", FileUploadView.class, MainLayout.class);
         }
         else if(role.equals(Role.ADMIN)){
@@ -81,8 +82,6 @@ public class AuthService {
                     FileUploadView.class, AdminLayout.class);
             configuration.setRoute("/ws",
                     ListView.class, AdminLayout.class);
-            configuration.setRoute("/login",
-                    LoginView.class);
         }
 
         //configuration.setAnnotatedRoute(ListView.class);

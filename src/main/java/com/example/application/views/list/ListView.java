@@ -1,6 +1,7 @@
 package com.example.application.views.list;
 
 import com.example.application.data.Contact;
+import com.example.application.services.ContactRepository;
 import com.example.application.services.CrmService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -13,11 +14,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
 
 
+@Route(value ="/ws")
 @AnonymousAllowed
 public class ListView extends VerticalLayout {
     //Grid<Contact> grid = new Grid<>(Contact.class);
@@ -26,6 +29,8 @@ public class ListView extends VerticalLayout {
     TextField filterText = new TextField();
     ContactForm form;
     CrmService service;
+
+    ContactRepository cr;
 
     public ListView(CrmService service) {
         this.service = service;
@@ -85,6 +90,7 @@ public class ListView extends VerticalLayout {
         //grid.addComponentColumn(this::createUserTile).setHeader("");
 
 
+        //grid.setItems(cr.getAll());
         grid.setItems(service.getAllContacts());
 
 
