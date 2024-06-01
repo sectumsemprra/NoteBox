@@ -25,18 +25,20 @@
 //
 //import java.util.List;
 //
-//public class File extends FormLayout {
+//public class FileForm extends FormLayout {
 //    Binder<FileEntity> binder = new BeanValidationBinder<>(FileEntity.class);
 //    TextField fileTitle = new TextField("File Title");
 //
-//    Button Upload = new Button()
+//    TextField username = new TextField("Username");
 //
+//
+//    Button Upload = new Button("Upload");
 //    Button save = new Button("Save");
 //    Button delete = new Button("Delete");
 //    Button close = new Button("Cancel");
 //
 //
-//    public ContactForm(List<Company> companies, List<Status> statuses) {
+//    public FileForm(List<Company> companies, List<Status> statuses) {
 //        addClassName("contact-form");
 //        binder.bindInstanceFields(this);
 //

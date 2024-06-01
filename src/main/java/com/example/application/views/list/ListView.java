@@ -167,7 +167,7 @@ public class ListView extends VerticalLayout {
     }
 
     private HorizontalLayout getToolbar() {
-        filterText.setPlaceholder("Filter by name...");
+        filterText.setPlaceholder("Filter by username...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
@@ -187,6 +187,10 @@ public class ListView extends VerticalLayout {
     }
 
     private void updateList() {
-        //grid.setItems(service.findAllContacts(filterText.getValue()));
+        if(filterText.getValue() == null || filterText.getValue().isEmpty())
+            grid.setItems(fileService.getFileEntities());
+        else {
+            grid.setItems(fileService.getFileEntityByUsername(filterText.getValue()));
+        }
     }
 }
