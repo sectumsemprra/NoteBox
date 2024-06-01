@@ -23,8 +23,7 @@ public class ReminderService {
 
 
     public void add_reminder(String taskName, LocalDateTime reminderTime) {
-        Userr userr = VaadinSession.getCurrent().getAttribute(Userr.class);
-        String username = userr.getUsername();
+        String username=AuthService.currentUserName;
         System.out.println(username);
         Reminder reminder = new Reminder( taskName, reminderTime,username);
         reminderRepository.save(reminder);
@@ -33,8 +32,7 @@ public class ReminderService {
 
     public List<Reminder> getReminderByUsername()
     {
-        Userr userr = VaadinSession.getCurrent().getAttribute(Userr.class);
-        String username = userr.getUsername();
+        String username=AuthService.currentUserName;
         return reminderRepository.findByName(username);
     }
 }
