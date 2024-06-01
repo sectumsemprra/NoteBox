@@ -28,23 +28,27 @@ public class RegisterView extends Composite {
     @Override
     protected Component initContent() {
         TextField username = new TextField("Username");
+        TextField institute = new TextField("Institute");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
         return new VerticalLayout(
                 new H2("Register"),
                 username,
+                institute,
                 password1,
                 password2,
-                new Button("Send", event-> register(
+
+                new Button("Submit", event-> register(
                         username.getValue(),
                         password1.getValue(),
-                        password2.getValue()
+                        password2.getValue(),
+                        institute.getValue()
                 ))
         );
     }
 
 
-    private void register(String username, String password1, String password2) {
+    private void register(String username, String password1, String password2, String institute) {
         if (username.trim().isEmpty()) {
             Notification.show("Enter a username");
         } else if (password1.isEmpty()) {
@@ -52,7 +56,7 @@ public class RegisterView extends Composite {
         } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
         } else {
-            authServicee.register(username, password1);
+            authServicee.register(username, password1, institute);
             //suserService.saveSUser(suser);
 
             Notification.show("Registered");

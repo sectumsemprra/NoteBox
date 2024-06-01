@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "FileInfo")
 
@@ -17,8 +19,10 @@ public class FileEntity {
     public String username;
     public String fileTitle;
     public String fileContent;
+    public String userInstitute;
     public boolean inDashboard = false;
     public boolean inPublicWorkspace = false;
+    public LocalDateTime uploadDate;
 
     public FileEntity() {
     }
@@ -49,6 +53,10 @@ public class FileEntity {
     public String getUsername() {
         return username;
     }
+    public String getUserInstitute() {
+        return userInstitute;
+    }
+
 
     // Setters
     public void setId(int id) {
@@ -70,7 +78,15 @@ public class FileEntity {
     public void setUsername(String username) {
         this.username = username;
     }
+    public void setUserInstitute(String userInstitute) {
+        this.userInstitute = userInstitute;
+    }
+    public LocalDateTime getUploadDate() {
+        return uploadDate;
+    }
 
-
+    public void setUploadDate(LocalDateTime uploadDate) {
+        this.uploadDate = uploadDate;
+    }
 
 }

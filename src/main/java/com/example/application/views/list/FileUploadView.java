@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,9 +51,6 @@ public class FileUploadView extends VerticalLayout {
     private String selectedFileTitle;
     private final String  finalUsername;
     private final int  finalUserid;
-
-
-
 
     public FileUploadView(AuthService authService, FileService fileService) {
         this.authService = authService;
@@ -118,6 +117,8 @@ public class FileUploadView extends VerticalLayout {
                 fileContents.add(contents);
                 FileEntity fileEntity = new FileEntity(finalUserid, fileName, contents, us);
                 fileEntity.inDashboard = true;
+                fileEntity.setUploadDate(LocalDateTime.now());
+                fileEntity.setUserInstitute(userr.getInstitute());
                 fileService.saveFileEntity(fileEntity);
 
             } catch (Exception e) {

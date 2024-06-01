@@ -40,6 +40,10 @@ public class FileService {
     {
         return fileRepository.findByUsername(username);
     }
+    public List<FileEntity> getFileEntityByUserInstitute(String userInstitute)
+    {
+        return fileRepository.findByUserInstitute(userInstitute);
+    }
     public String deleteFileEntity(int id)
     {
         fileRepository.deleteById(id);
