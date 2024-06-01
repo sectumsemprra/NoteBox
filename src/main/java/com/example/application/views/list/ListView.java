@@ -45,7 +45,7 @@ public class ListView extends VerticalLayout {
     TextField filterText = new TextField();
     ComboBox<String> filterOptions = new ComboBox<>();
 
-    ContactForm form;
+    FileForm form;
     CrmService service;
     ContactRepository cr;
 
@@ -95,7 +95,7 @@ public class ListView extends VerticalLayout {
     }
     private void closeEditor()
     {
-        form.setContact(null);
+        form.setFileEntity(null);
         form.setVisible(false);
         removeClassNames("editing");
     }
@@ -110,24 +110,24 @@ public class ListView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
+        form = new FileForm(service.findAllCompanies(), service.findAllStatuses());
         form.setWidth("25em");
 
-        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
-        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
-        form.addListener(ContactForm.CloseEvent.class, e -> closeEditor());
+//        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
+//        form.addListener(ContactForm.DeleteEvent.class, this::deleteContact);
+        form.addListener(FileForm.CloseEvent.class, e -> closeEditor());
     }
     private void saveContact(ContactForm.SaveEvent event)
     {
-        service.saveContact(event.getContact());
-        updateList();
-        closeEditor();
+//        service.saveContact(event.getContact());
+//        updateList();
+//        closeEditor();
     }
     private void deleteContact(ContactForm.DeleteEvent event)
     {
-        service.deleteContact(event.getContact());
-        updateList();
-        closeEditor();
+//        service.deleteContact(event.getContact());
+//        updateList();
+//        closeEditor();
     }
 
 
@@ -157,7 +157,7 @@ public class ListView extends VerticalLayout {
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Institute");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
-      //  grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+        grid.asSingleSelect().addValueChangeListener(e -> editFileForm(e.getValue()));
 
         /*grid.addColumn(list -> list.get(0)).setHeader("");
         grid.addColumn(list -> list.get(1)).setHeader("");
@@ -208,11 +208,20 @@ public class ListView extends VerticalLayout {
     }
 
     private void editContact(Contact contact) {
-        if(contact == null)
-        {
-            closeEditor();
+//        if(contact == null)
+//        {
+//            closeEditor();
+//        }else{
+//            form.setContact(contact);
+//            form.setVisible(true);
+//            addClassName("editing");
+//        }
+    }
+    private void editFileForm(FileEntity fileEntity) {
+        if(fileEntity == null)
+        {            closeEditor();
         }else{
-            form.setContact(contact);
+            form.setFileEntity(fileEntity);
             form.setVisible(true);
             addClassName("editing");
         }
