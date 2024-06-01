@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,8 @@ public class FileUploadView extends VerticalLayout {
     private final FileService fileService;
     private String selectedFileTitle;
     private final String  finalUsername;
+    private final int  finalUserid;
+
 
 
 
@@ -59,6 +62,7 @@ public class FileUploadView extends VerticalLayout {
         Object obj = null;
         // Retrieve the current username
         VaadinSession vaadinsession = VaadinSession.getCurrent();
+
         if (vaadinsession != null) {
             //Notification.show("okkkk");
             // Retrieve the attribute
@@ -80,6 +84,8 @@ public class FileUploadView extends VerticalLayout {
         Span usernameSpan = new Span("Logged in as: " + username);
         usernameSpan.getStyle().set("margin-left", "auto");
         finalUsername = username;
+        Userr userr = authService.findByUsername(finalUsername);
+        finalUserid = userr.getId();
 
         // Create the layout for the header
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -104,9 +110,10 @@ public class FileUploadView extends VerticalLayout {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(buffer.getInputStream(fileName)));
                 String contents = reader.lines().collect(Collectors.joining("\n"));
                 String us = finalUsername;
+
                 fileTitles.add(fileName);
                 fileContents.add(contents);
-                FileEntity fileEntity = new FileEntity(1, fileName, contents, us);
+                FileEntity fileEntity = new FileEntity(finalUserid, fileName, contents, us);
 
                 fileService.saveFileEntity(fileEntity);
 

@@ -46,6 +46,8 @@ public class AuthService {
             Notification.show(username + " has logged in");
             VaadinSession.getCurrent().getSession().setAttribute("username", username);
             VaadinServletService.getCurrentServletRequest().getSession().setAttribute("name", username);
+
+
             currentUserName = username;
             createRoutes(userr.getRole());
         }
@@ -88,6 +90,10 @@ public class AuthService {
     }
     public static void setCurrentUsername(String name) {
         currentUserName = name;
+    }
+    public Userr findByUsername(String currentUserName)
+    {
+        return userRepo.getByUsername(currentUserName);
     }
 
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){
