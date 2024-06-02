@@ -20,19 +20,25 @@ public class TaskService {
         //this.reminderRepository=reminderRepository;
     }
 
-    public void add_task(String s)
+    public Long add_task(String s,String username)
     {
-        String username=AuthService.currentUserName;
+        //String username=AuthService.currentUserName;
         Task t = new Task(username, s);
         taskRepository.save(t);
+        return  t.getId();
     }
 
+   public void delete(Long id){
+       //String username=AuthService.currentUserName;
+      // Task t = new Task(username, s);
+       taskRepository.deleteById(id);
+   }
 
 
-    public List<Task> getTasksByUsername() {
+    public List<Task> getTasksByUsername(String username) {
 
         System.out.println("laa1");
-        String username=AuthService.currentUserName;
+       // String username=AuthService.currentUserName;
         return taskRepository.findByUsername(username);
     }
 
