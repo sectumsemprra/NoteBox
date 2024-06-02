@@ -1,6 +1,7 @@
 package com.example.application.views.list;
 
 import com.example.application.data.Contact;
+import com.example.application.data.Role;
 import com.example.application.data.Userr;
 import com.example.application.entity.FileEntity;
 import com.example.application.repository.FileRepository;
@@ -8,7 +9,7 @@ import com.example.application.service.FileService;
 import com.example.application.services.AuthService;
 import com.example.application.services.ContactRepository;
 import com.example.application.services.CrmService;
-import com.vaadin.componentfactory.pdfviewer.PdfViewer;
+//import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -22,6 +23,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.UploadI18N;
@@ -38,6 +40,7 @@ import org.aspectj.weaver.ast.Not;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,7 @@ public class ListView extends VerticalLayout {
     FileRepository fileRepository;
     public String currentUsername;
     public FileEntity currentFileEntity;
+    public Userr currentUser;
 
     public ListView(CrmService service, FileService fileService, AuthService authService) {
         this.service = service;
@@ -93,6 +97,8 @@ public class ListView extends VerticalLayout {
             username = (String) obj;
         }
         currentUsername = username;
+        currentUser = authService.findByUsername(currentUsername);
+
 
         addClassName("list-view");
         setSizeFull();
@@ -150,34 +156,34 @@ public class ListView extends VerticalLayout {
     }
 
     private void editFileView() {
-            if (currentFileEntity != null && !currentFileEntity.textfile) {
+        if (currentFileEntity != null && !currentFileEntity.textfile) {
 
-                if(currentFileEntity.getFileContent()==null) Notification.show("file content null");
-                else{
+            if(currentFileEntity.getFileContent()==null) Notification.show("file content null");
+            else{
 
-                    System.out.println(currentFileEntity.getFileTitle()+"'s file size: " + currentFileEntity.getFileContent().length + "bytes");
-                    //String fileUrl = "/files?title=" + currentFileEntity.getFileTitle();
-                    String fileUrl = UriComponentsBuilder.fromUriString("/files")
-                            .queryParam("title", currentFileEntity.getFileTitle())
-                            .toUriString();
+                System.out.println(currentFileEntity.getFileTitle()+"'s file size: " + currentFileEntity.getFileContent().length + "bytes");
+                //String fileUrl = "/files?title=" + currentFileEntity.getFileTitle();
+                String fileUrl = UriComponentsBuilder.fromUriString("/files")
+                        .queryParam("title", currentFileEntity.getFileTitle())
+                        .toUriString();
 
-                    Anchor pdfAnchor = new Anchor(fileUrl, "Open PDF");
-                    pdfAnchor.setTarget("_blank");
+                Anchor pdfAnchor = new Anchor(fileUrl, "Open PDF");
+                pdfAnchor.setTarget("_blank");
 
-                    Button viewPdfButton = new Button("View PDF", event -> {
-                        getUI().ifPresent(ui -> ui.getPage().open(fileUrl, "_blank"));
-                    });
+                Button viewPdfButton = new Button("View PDF", event -> {
+                    getUI().ifPresent(ui -> ui.getPage().open(fileUrl, "_blank"));
+                });
 
-                    Dialog dialog = new Dialog();
-                    VerticalLayout dialogLayout = new VerticalLayout();
-                    Text warning = new Text("Pdf will open in a new tab");
-                    Button close = new Button("Close");
-                    close.addClickListener(e-> dialog.close());
+                Dialog dialog = new Dialog();
+                VerticalLayout dialogLayout = new VerticalLayout();
+                Text warning = new Text("Pdf will open in a new tab");
+                Button close = new Button("Close");
+                close.addClickListener(e-> dialog.close());
 
-                    dialogLayout.add(warning,viewPdfButton, close);
-                    dialog.add(dialogLayout);
-                    dialog.open();
-                }
+                dialogLayout.add(warning,viewPdfButton, close);
+                dialog.add(dialogLayout);
+                dialog.open();
+            }
                     /*PdfViewer pdfViewer = new PdfViewer();
                     StreamResource resource = new StreamResource(currentFileEntity.getFileTitle(),
                             () -> new ByteArrayInputStream(currentFileEntity.getFileContent() ));
@@ -185,8 +191,74 @@ public class ListView extends VerticalLayout {
                     pdfViewer.openThumbnailsView();
                     add(pdfViewer);
                 }*/
+                    /*StreamResource streamResource = new StreamResource(currentFileEntity.getFileTitle(),
+                        () -> new ByteArrayInputStream(currentFileEntity.getFileContent() ));
+
+                    Anchor pdfAnchor = new Anchor(streamResource, "Open PDF");
+                    pdfAnchor.getElement().setAttribute("target", "_blank");
+
+                    Button viewPdfButton = new Button("View PDF", event -> {
+                        Page page = getUI().get().getPage();
+                        page.open(String.valueOf(streamResource), "_blank");
+                    });
+
+                    add(pdfAnchor, viewPdfButton);
+                }*/
+        } else if (currentFileEntity != null && currentFileEntity.textfile) {
+            showTextFileDialog();
+        }
+        else{
+            Notification.show("File Type Not Supported");
+        }
+    }
+
+
+    private void showTextFileDialog() {
+        String fileContent = fileService.getTextFileContent(currentFileEntity.getId());
+        if (fileContent != null) {
+            Dialog dialog = new Dialog();
+
+            // Create and configure the TextArea
+            TextArea textArea = new TextArea();
+            textArea.setReadOnly(true);
+            textArea.setValue(fileContent);
+            textArea.setWidth("100%");
+            textArea.getStyle().set("min-height", "200px");
+
+            // Wrap the TextArea in a Div with fixed height and overflow auto
+            Div textAreaContainer = new Div(textArea);
+            textAreaContainer.getStyle().set("max-height", "500px");
+            textAreaContainer.getStyle().set("overflow", "auto");
+
+            // Create the "Close" button
+            Button closeButton = new Button("Close", event -> dialog.close());
+
+            // Create the "Download" button
+            StreamResource resource = new StreamResource(currentFileEntity.getFileTitle(), () -> {
+                return new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+            });
+
+            // Add the download anchor to the button's click listener
+            Anchor downloadAnchor = new Anchor(resource, "");
+            downloadAnchor.getElement().setAttribute("download", true);
+            downloadAnchor.getElement().setAttribute("style", "display: none;");
+            dialog.add(downloadAnchor);
+
+            Button downloadButton = new Button("Download", event -> {
+                downloadAnchor.getElement().callJsFunction("click");
+            });
+
+            // Layout for buttons
+            HorizontalLayout buttonLayout = new HorizontalLayout();
+            buttonLayout.add(closeButton, downloadButton);
+
+            // Add components to the dialog
+            dialog.add(textAreaContainer, buttonLayout);
+            dialog.setWidth("600px");
+            dialog.setHeight("600px");
+            dialog.open();
         } else {
-            Notification.show("not pdf type");
+            Notification.show("Something went wrong :((");
         }
     }
     private void saveContact(ContactForm.SaveEvent event)
@@ -230,6 +302,7 @@ public class ListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true));*/
 
         grid.asSingleSelect().addValueChangeListener(e -> editFileForm(e.getValue()));
+
 
 
         /*grid.addColumn(list -> list.get(0)).setHeader("");
@@ -316,7 +389,19 @@ public class ListView extends VerticalLayout {
         addContactButton.addClickListener(e -> addNotes());
         addContactButton.addClassName("custom-button-black");
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterOptions, filterText, addContactButton);
+        Button deleteFileButton = new Button("Delete");
+        deleteFileButton.addClickListener(e -> deleteNotes());
+
+        if(currentUser != null && currentUser.getRole() == Role.ADMIN)
+        {
+            deleteFileButton.setVisible(true);
+        }
+        else{
+            deleteFileButton.setVisible(false);
+        }
+
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterOptions, filterText, addContactButton, deleteFileButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -380,6 +465,18 @@ public class ListView extends VerticalLayout {
         dialogLayout.add(fileTitle, fileDescription, upload, uploadButton);
         dialog.add(dialogLayout);
         dialog.open();
+    }
+
+    private void deleteNotes()
+    {
+        if(currentFileEntity.inDashboard)
+        {
+            currentFileEntity.inPublicWorkspace = false;
+            fileService.updateFileEntity(currentFileEntity);
+        }else{
+            fileService.deleteFileEntity(currentFileEntity.getId());
+        }
+        updateList();
     }
 
 

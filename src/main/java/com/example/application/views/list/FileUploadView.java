@@ -5,13 +5,14 @@ import com.example.application.entity.FileEntity;
 import com.example.application.service.FileService;
 import com.example.application.services.AuthService;
 import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,11 +26,12 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.aspectj.weaver.ast.Not;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +50,8 @@ public class FileUploadView extends VerticalLayout {
     private final Grid<FileEntity> grid = new Grid<>();
     private final TextArea fileContentTextArea = new TextArea();
     private final Button deleteButton = new Button("Delete");
-    private final Button saveButton = new Button("Save Changes");
+    private final Button saveButton = new Button("Save");
+    private final Button downloadButton = new Button("Download");
     private final Button addToWorkspaceButton = new Button("Add to Workspace");
 
     Div notesContainer = new Div();
@@ -112,6 +115,14 @@ public class FileUploadView extends VerticalLayout {
         finalUsername = username;
         Userr userr = authService.findByUsername(finalUsername);
         finalUserId = userr.getId();
+        //fileContentTextArea.setVisible(false);
+
+        fileContentTextArea.getStyle().set("overflow", "auto");
+        fileContentTextArea.getStyle().set("max-height", "400px");
+
+        /*HorizontalLayout headerLayout = new HorizontalLayout();
+        headerLayout.setWidthFull();
+        headerLayout.add(usernameSpan);*/
 
         //scratchpad
         //fileContentTextArea.setVisible(false);
@@ -189,15 +200,69 @@ public class FileUploadView extends VerticalLayout {
                 selectedFileTitle = selectedFile.getFileTitle();
                 if(selectedFile.textfile) {
                     fileContentTextArea.setVisible(true);
-                    fileContentTextArea.setValue( new String(selectedFile.getFileContent(), StandardCharsets. UTF_8));
+                    String fileContent = fileService.getTextFileContent(selectedFile.getId());
+                    fileContentTextArea.setValue(fileContent);
+
+
                 }
-                else Notification.show("Type not supported");
+                else{
+                    //Notification.show("Type not supported");
+                    fileContentTextArea.setVisible(false);
+                    String fileUrl = UriComponentsBuilder.fromUriString("/files")
+                            .queryParam("title", fselectedFile.getFileTitle())
+                            .toUriString();
+
+                    Anchor pdfAnchor = new Anchor(fileUrl, "Open PDF");
+                    pdfAnchor.setTarget("_blank");
+
+                    Button viewPdfButton = new Button("View PDF", event1 -> {
+                        getUI().ifPresent(ui -> ui.getPage().open(fileUrl, "_blank"));
+                    });
+
+                    Dialog dialog = new Dialog();
+                    VerticalLayout dialogLayout = new VerticalLayout();
+                    Text warning = new Text("Pdf will open in a new tab");
+                    Button close = new Button("Close");
+                    close.addClickListener(e-> dialog.close());
+
+                    dialogLayout.add(warning,viewPdfButton, close);
+                    dialog.add(dialogLayout);
+                    dialog.open();
+                }
             } else {
                 selectedFileTitle = null;
                 fileContentTextArea.clear();
                 fileContentTextArea.setVisible(false);
             }
         });*/
+
+
+        downloadButton.addClickListener(e -> {
+            if (selectedFileTitle != null && fselectedFile.textfile) {
+                String fileContent = fileService.getTextFileContent(fselectedFile.getId());
+                String fileName = fselectedFile.getFileTitle();
+
+                // Ensure the filename has the .txt extension
+                if (!fileName.endsWith(".txt")) {
+                    fileName += ".txt";
+                }
+
+                StreamResource resource = new StreamResource(fileName, () -> new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)));
+                resource.setContentType("text/plain");
+
+
+                Anchor downloadAnchor = new Anchor(resource, "Download");
+                downloadAnchor.getElement().setAttribute("download", true);
+                downloadAnchor.getElement().setAttribute("style", "display: none;");
+                add(downloadAnchor);
+
+                // Trigger download and then remove the anchor
+                downloadAnchor.getElement().callJsFunction("click()");
+            } else {
+                Notification.show("No file selected to download.");
+            }
+        });
+        downloadButton.addClassName("custom-button-black");
 
         deleteButton.addClickListener(e -> {
             if (selectedFileTitle != null) {
@@ -206,6 +271,7 @@ public class FileUploadView extends VerticalLayout {
                 Notification.show("No file selected to delete.");
             }
         });
+
 
         saveButton.addClickListener(e -> {
             if (selectedFileTitle != null) {
@@ -219,9 +285,25 @@ public class FileUploadView extends VerticalLayout {
         fileContentTextArea.setHeight("120%");
         deleteButton.addClassName("custom-button-black");
         saveButton.addClassName("custom-button-black");
+        /*addToWorkspaceButton.addClickListener(e -> {
+            if (selectedFileTitle != null) {
+                if(!fselectedFile.inPublicWorkspace)
+                {
+                    fselectedFile.inPublicWorkspace = true;
+                    fileService.updateFileEntity(fselectedFile);
+                    Notification.show("Added to Workspace");
+                }
+                else {
+                    Notification.show("Already Added");
+                }
+            } else {
+                Notification.show("No file selected to add to workspace.");
+            }
+        });*/
 
         VerticalLayout scratchpad = new VerticalLayout();
-        scratchpad.add(upload, spText, fileContentTextArea, new HorizontalLayout(deleteButton, saveButton, addWorkSpace));
+        scratchpad.add(upload, spText, fileContentTextArea, new HorizontalLayout(downloadButton, deleteButton, saveButton, addWorkSpace));
+        fileContentTextArea.setWidthFull();
 
         VerticalLayout nt = new VerticalLayout();
         nt.add(usernameSpan, noteText, notesContainer);
@@ -230,13 +312,11 @@ public class FileUploadView extends VerticalLayout {
 
         HorizontalLayout contentLayout = new HorizontalLayout(nt, scratchpad);
         contentLayout.setWidthFull();
-        contentLayout.setFlexGrow(0, grid);
-        contentLayout.setFlexGrow(0, fileContentTextArea);
-        contentLayout.setWidth("100%");
+        //contentLayout.setFlexGrow(0, grid);
+        //contentLayout.setFlexGrow(0, fileContentTextArea);
         nt.setWidth("60%");
         scratchpad.setWidth("40%");
         //grid.setWidth("50%");
-
 
         add(contentLayout);
     }
@@ -295,6 +375,8 @@ public class FileUploadView extends VerticalLayout {
         v.getElement().setAttribute("file-name", user.getFileTitle());
 
         return v;
+
+       // add(headerLayout, upload, contentLayout, new HorizontalLayout(downloadButton, deleteButton, saveButton, addToWorkspaceButton));
     }
 
     private void refreshGrid() {

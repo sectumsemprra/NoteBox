@@ -81,9 +81,11 @@ public class AuthService {
         }
     }
 
-    public void register(String username, String pass, String institute){
+    public void register(String username, String pass, String institute, String firstName, String lastName){
         Userr userr = new Userr(username, pass, Role.USER);
         userr.setInstitute(institute);
+        userr.setFirstName(firstName);
+        userr.setLastName(lastName);
         userr.registered = true;
         userRepo.save(userr);
         UI.getCurrent().navigate("/");

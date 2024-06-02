@@ -218,7 +218,7 @@ body {
 }
 
 .hero-section {
-    background-image: url('E:/coding/2-2 project practice/NoteBox-main/frontend/paper.jpg');
+    background-image: url("E:/coding/2-2 project practice/NoteBox-main/frontend/paper.jpg");
     display: flex;
     align-items: center;
     justify-content: center;
