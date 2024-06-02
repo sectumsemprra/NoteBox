@@ -51,7 +51,6 @@ public class RegisterView extends Composite {
         );
     }
 
-
     private void register(String username, String password1, String password2, String institute) {
         if (username.trim().isEmpty()) {
             Notification.show("Enter a username");

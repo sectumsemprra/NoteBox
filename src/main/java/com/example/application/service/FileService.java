@@ -5,6 +5,7 @@ import com.example.application.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -66,6 +67,14 @@ public class FileService {
 
 
         return fileRepository.save(existing);
+    }
+
+    public String getTextFileContent(int fileId) {
+        FileEntity fileEntity = fileRepository.findById(fileId).orElse(null);
+        if (fileEntity != null && fileEntity.textfile) {
+            return new String(fileEntity.getFileContent(), StandardCharsets.UTF_8);
+        }
+        return null;
     }
 
 }
