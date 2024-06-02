@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -23,6 +24,18 @@ public class SecurityConfig extends VaadinWebSecurity {
                         AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/images/*.png")).permitAll());
         super.configure(http);
         //setLoginView(http, LoginView.class); //set login view to our login class rather than the default
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated()
+                );
+
+        return http.build();
     }
 
     /*@Bean
