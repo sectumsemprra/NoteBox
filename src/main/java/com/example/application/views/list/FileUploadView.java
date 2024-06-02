@@ -172,32 +172,27 @@ public class FileUploadView extends VerticalLayout {
         });
 
 
-
-
-
-
-
-
-
-
-
-
         downloadButton.addClickListener(e -> {
             if (selectedFileTitle != null && fselectedFile.textfile) {
                 String fileContent = fileService.getTextFileContent(fselectedFile.getId());
-                StreamResource resource = new StreamResource(fselectedFile.getFileTitle() + ".txt",
-                        () -> new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)));
+                String fileName = fselectedFile.getFileTitle();
+
+                // Ensure the filename has the .txt extension
+                if (!fileName.endsWith(".txt")) {
+                    fileName += ".txt";
+                }
+
+                StreamResource resource = new StreamResource(fileName, () -> new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)));
                 resource.setContentType("text/plain");
 
-                Anchor downloadAnchor = new Anchor(resource, "");
+
+                Anchor downloadAnchor = new Anchor(resource, "Download");
                 downloadAnchor.getElement().setAttribute("download", true);
                 downloadAnchor.getElement().setAttribute("style", "display: none;");
                 add(downloadAnchor);
 
                 // Trigger download and then remove the anchor
-                downloadAnchor.getElement().executeJs("this.click();").then(result -> {
-                    remove(downloadAnchor);
-                });
+                downloadAnchor.getElement().callJsFunction("click()");
             } else {
                 Notification.show("No file selected to download.");
             }
