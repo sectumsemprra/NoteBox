@@ -8,33 +8,41 @@ import com.example.application.service.FileService;
 import com.example.application.services.AuthService;
 import com.example.application.services.ContactRepository;
 import com.example.application.services.CrmService;
+import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.UploadI18N;
 import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.aspectj.weaver.ast.Not;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.yaml.snakeyaml.nodes.NodeId.anchor;
 
 
 @Route(value ="/ws")
@@ -135,6 +143,63 @@ public class ListView extends VerticalLayout {
         form.addListener(FileForm.CloseEvent.class, e -> closeEditor());
 
         form.addListener(FileForm.AddToPersonalEvent.class, e -> addToPersonal());
+        form.addListener(FileForm.FileViewEvent.class, e -> editFileView());
+
+
+    }
+
+    private void editFileView() {
+            if (currentFileEntity != null && !currentFileEntity.textfile) {
+
+                if(currentFileEntity.getFileContent()==null) Notification.show("file content null");
+                else{
+
+                    System.out.println(currentFileEntity.getFileTitle()+"'s file size: " + currentFileEntity.getFileContent().length + "bytes");
+                    //String fileUrl = "/files?title=" + currentFileEntity.getFileTitle();
+                    String fileUrl = UriComponentsBuilder.fromUriString("/files")
+                            .queryParam("title", currentFileEntity.getFileTitle())
+                            .toUriString();
+
+                    Anchor pdfAnchor = new Anchor(fileUrl, "Open PDF");
+                    pdfAnchor.setTarget("_blank");
+
+                    Button viewPdfButton = new Button("View PDF", event -> {
+                        getUI().ifPresent(ui -> ui.getPage().open(fileUrl, "_blank"));
+                    });
+
+                    Dialog dialog = new Dialog();
+                    VerticalLayout dialogLayout = new VerticalLayout();
+                    Text warning = new Text("Pdf will open in a new tab");
+                    Button close = new Button("Close");
+                    close.addClickListener(e-> dialog.close());
+
+                    dialogLayout.add(warning,viewPdfButton, close);
+                    dialog.add(dialogLayout);
+                    dialog.open();
+                }
+                    /*PdfViewer pdfViewer = new PdfViewer();
+                    StreamResource resource = new StreamResource(currentFileEntity.getFileTitle(),
+                            () -> new ByteArrayInputStream(currentFileEntity.getFileContent() ));
+                    pdfViewer.setSrc(resource);
+                    pdfViewer.openThumbnailsView();
+                    add(pdfViewer);
+                }*/
+                    /*StreamResource streamResource = new StreamResource(currentFileEntity.getFileTitle(),
+                        () -> new ByteArrayInputStream(currentFileEntity.getFileContent() ));
+
+                    Anchor pdfAnchor = new Anchor(streamResource, "Open PDF");
+                    pdfAnchor.getElement().setAttribute("target", "_blank");
+
+                    Button viewPdfButton = new Button("View PDF", event -> {
+                        Page page = getUI().get().getPage();
+                        page.open(String.valueOf(streamResource), "_blank");
+                    });
+
+                    add(pdfAnchor, viewPdfButton);
+                }*/
+        } else {
+            Notification.show("not pdf type pdf");
+        }
     }
     private void saveContact(ContactForm.SaveEvent event)
     {
@@ -284,32 +349,40 @@ public class ListView extends VerticalLayout {
 
         FileBuffer fileBuffer = new FileBuffer();
         Upload upload = new Upload(fileBuffer);
-        upload.setAcceptedFileTypes("text/plain");
+        upload.setAcceptedFileTypes("text/plain", "application/pdf");
         upload.setI18n(new UploadI18N().setDropFiles(new UploadI18N.DropFiles().setOne("Drop file here"))
                 .setAddFiles(new UploadI18N.AddFiles().setOne("Upload file"))
                 .setError(new UploadI18N.Error().setTooManyFiles("You can only upload one file")));
 
         Button uploadButton = new Button("Upload", event -> {
+            //Notification.show("reached upload");
+
             String title = fileTitle.getValue();
+            String substr = title.substring(title.length()-3);
             String description = fileDescription.getValue();
 
             String user = cuser.getUsername();
             int id = cuser.getId();
 
             if (fileBuffer.getInputStream() != null && !title.isEmpty()) {
-                String content = null;
+                byte[] contents = null;
                 try {
-                    content = new String(fileBuffer.getInputStream().readAllBytes());
+                    //content = new String(fileBuffer.getInputStream().readAllBytes());
+                    contents = fileBuffer.getInputStream().readAllBytes();
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                FileEntity fileEntity = new FileEntity(id,title, content , user);
+                FileEntity fileEntity = new FileEntity(id,title, contents , user, substr);
                 fileEntity.inPublicWorkspace = true;
                 fileEntity.setUserInstitute(cuser.getInstitute());
                 fileEntity.setUploadDate(LocalDateTime.now());
                 fileService.saveFileEntity(fileEntity);
                 updateList();
                 dialog.close();
+                System.out.println("uploaded file size: " + contents.length + "bytes");
+                System.out.println("classed file size: " + fileEntity.getFileContent().length + "bytes");
+                System.out.println("database stored file size: "+ fileService.getFileEntityByTitle(fileEntity.getFileTitle()).getFileContent().length + "BYTES");
                 Notification.show("File uploaded successfully");
             } else {
                 Notification.show("All fields are required", 3000, Notification.Position.MIDDLE);
