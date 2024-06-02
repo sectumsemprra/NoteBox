@@ -118,7 +118,6 @@ public class FileUploadView extends VerticalLayout {
         //fileContentTextArea.setVisible(false);
 
         fileContentTextArea.getStyle().set("overflow", "auto");
-        fileContentTextArea.getStyle().set("max-height", "400px");
 
         /*HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
@@ -339,9 +338,21 @@ public class FileUploadView extends VerticalLayout {
                     selectedFileTitle = selectedFile.getFileTitle();
                     if(selectedFile.textfile) {
                         fileContentTextArea.setVisible(true);
-                        fileContentTextArea.setValue( new String(selectedFile.getFileContent(), StandardCharsets. UTF_8));
+                        String fileContent = fileService.getTextFileContent(selectedFile.getId());
+                        fileContentTextArea.setValue(fileContent);
+
+
                     }
-                    else Notification.show("Type not supported");
+                    else{
+                        //Notification.show("Type not supported");
+                        //fileContentTextArea.setVisible(false);
+                        String fileUrl = UriComponentsBuilder.fromUriString("/filess")
+                                .queryParam("title", fselectedFile.getFileTitle())
+                                .toUriString();
+
+                        Dialog dialog = getDialog(fileUrl);
+                        dialog.open();
+                    }
                 } else {
                     selectedFileTitle = null;
                     fileContentTextArea.clear();
@@ -351,6 +362,25 @@ public class FileUploadView extends VerticalLayout {
             layout.add(temp);
         }
         return layout;
+    }
+
+    private Dialog getDialog(String fileUrl) {
+        Anchor pdfAnchor = new Anchor(fileUrl, "Open PDF");
+        pdfAnchor.setTarget("_blank");
+
+        Button viewPdfButton = new Button("View PDF", event1 -> {
+            getUI().ifPresent(ui -> ui.getPage().open(fileUrl, "_blank"));
+        });
+
+        Dialog dialog = new Dialog();
+        VerticalLayout dialogLayout = new VerticalLayout();
+        Text warning = new Text("Pdf will open in a new tab");
+        Button close = new Button("Close");
+        close.addClickListener(e-> dialog.close());
+
+        dialogLayout.add(warning,viewPdfButton, close);
+        dialog.add(dialogLayout);
+        return dialog;
     }
 
     private VerticalLayout createUserTile(FileEntity user) {
