@@ -74,6 +74,8 @@ public class FileUploadView extends VerticalLayout {
         MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
+        upload.getElement().executeJs("this.shadowRoot.querySelector('vaadin-upload-file').style.display = 'none';");
+
 
         List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username);
         existingFiles.forEach(file -> {
@@ -97,6 +99,8 @@ public class FileUploadView extends VerticalLayout {
                 fileService.saveFileEntity(fileEntity);
                 fileEntities.add(fileEntity);
                 refreshGrid();
+                upload.getElement().executeJs("this.files = []");
+
 
             } catch (Exception e) {
                 e.printStackTrace();
