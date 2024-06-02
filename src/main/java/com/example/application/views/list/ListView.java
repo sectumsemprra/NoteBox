@@ -1,6 +1,7 @@
 package com.example.application.views.list;
 
 import com.example.application.data.Contact;
+import com.example.application.data.Role;
 import com.example.application.data.Userr;
 import com.example.application.entity.FileEntity;
 import com.example.application.repository.FileRepository;
@@ -65,6 +66,7 @@ public class ListView extends VerticalLayout {
     FileRepository fileRepository;
     public String currentUsername;
     public FileEntity currentFileEntity;
+    public Userr currentUser;
 
     public ListView(CrmService service, FileService fileService, AuthService authService) {
         this.service = service;
@@ -94,6 +96,8 @@ public class ListView extends VerticalLayout {
             username = (String) obj;
         }
         currentUsername = username;
+        currentUser = authService.findByUsername(currentUsername);
+
 
         addClassName("list-view");
         setSizeFull();
@@ -299,6 +303,7 @@ public class ListView extends VerticalLayout {
         grid.asSingleSelect().addValueChangeListener(e -> editFileForm(e.getValue()));
 
 
+
         /*grid.addColumn(list -> list.get(0)).setHeader("");
         grid.addColumn(list -> list.get(1)).setHeader("");
 
@@ -383,7 +388,19 @@ public class ListView extends VerticalLayout {
         addContactButton.addClickListener(e -> addNotes());
         addContactButton.addClassName("custom-button-black");
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterOptions, filterText, addContactButton);
+        Button deleteFileButton = new Button("Delete");
+        deleteFileButton.addClickListener(e -> deleteNotes());
+
+        if(currentUser != null && currentUser.getRole() == Role.ADMIN)
+        {
+            deleteFileButton.setVisible(true);
+        }
+        else{
+            deleteFileButton.setVisible(false);
+        }
+
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterOptions, filterText, addContactButton, deleteFileButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -447,6 +464,18 @@ public class ListView extends VerticalLayout {
         dialogLayout.add(fileTitle, fileDescription, upload, uploadButton);
         dialog.add(dialogLayout);
         dialog.open();
+    }
+
+    private void deleteNotes()
+    {
+        if(currentFileEntity.inDashboard)
+        {
+            currentFileEntity.inPublicWorkspace = false;
+            fileService.updateFileEntity(currentFileEntity);
+        }else{
+            fileService.deleteFileEntity(currentFileEntity.getId());
+        }
+        updateList();
     }
 
 

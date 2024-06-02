@@ -31,12 +31,16 @@ public class RegisterView extends Composite {
 
     @Override
     protected Component initContent() {
+        TextField firstName = new TextField("First Name");
+        TextField lastName = new TextField("Last Name");
         TextField username = new TextField("Username");
         TextField institute = new TextField("Institute");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
         return new VerticalLayout(
                 new H2("Register"),
+                firstName,
+                lastName,
                 username,
                 institute,
                 password1,
@@ -46,24 +50,34 @@ public class RegisterView extends Composite {
                         username.getValue(),
                         password1.getValue(),
                         password2.getValue(),
-                        institute.getValue()
+                        institute.getValue(),
+                        firstName.getValue(),
+                        lastName.getValue()
                 ))
         );
     }
 
-    private void register(String username, String password1, String password2, String institute) {
+    private void register(String username, String password1, String password2, String institute, String firstName, String lastName) {
         if (username.trim().isEmpty()) {
             Notification.show("Enter a username");
         } else if (password1.isEmpty()) {
             Notification.show("Enter a password");
         } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
-        } else {
+        } else if (password1.length() < 6) {
+            Notification.show("Password must be at least 6 characters long");
+        }else if (firstName.isEmpty()) {
+            Notification.show("Enter a First Name");
+        }
+            else if (lastName.isEmpty()) {
+                Notification.show("Enter a Last Name");
+            }
+            else {
 
             Userr alreadyExists = userRepository.getByUsername(username);
 
             if(alreadyExists == null) {
-                authServicee.register(username, password1, institute);
+                authServicee.register(username, password1, institute, firstName, lastName);
                 Notification.show("Registered");
                 UI.getCurrent().navigate("/");
             }

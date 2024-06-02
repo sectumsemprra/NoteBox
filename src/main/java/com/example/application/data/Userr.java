@@ -8,6 +8,8 @@ import org.springframework.util.DigestUtils;
 public class Userr extends AbstractPerson {
   //  public static int userId;
     private String username;
+    private String firstName;
+    private String lastName;
     private String institute;
     private String passwordSalt;
     private String passwordHash;
@@ -61,5 +63,18 @@ public class Userr extends AbstractPerson {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+
+    public String getFirstName(){return firstName;}
+    public String getLastName(){return lastName;}
+
+    public void setFirstName(String firstName)
+    {
+        this.firstName = firstName;
+    }
+    public void setLastName(String lastName)
+    {
+        this.lastName = lastName;
     }
 }
