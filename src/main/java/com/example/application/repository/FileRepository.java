@@ -10,4 +10,6 @@ public interface FileRepository extends JpaRepository<FileEntity, Integer> {
     List<FileEntity> findByUsername(String username);
     List<FileEntity> findByUserInstitute(String userInstitute);
     FileEntity findByfileTitle(String title);
+
+    void deleteByfileTitle(String ttile);
 }

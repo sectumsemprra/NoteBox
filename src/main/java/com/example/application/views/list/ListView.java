@@ -70,6 +70,7 @@ public class ListView extends VerticalLayout {
         this.authService = authService;
 
 
+        //fileService.deleteAll();
         String username = "";
         Object obj = null;
         // Retrieve the current username
@@ -184,21 +185,8 @@ public class ListView extends VerticalLayout {
                     pdfViewer.openThumbnailsView();
                     add(pdfViewer);
                 }*/
-                    /*StreamResource streamResource = new StreamResource(currentFileEntity.getFileTitle(),
-                        () -> new ByteArrayInputStream(currentFileEntity.getFileContent() ));
-
-                    Anchor pdfAnchor = new Anchor(streamResource, "Open PDF");
-                    pdfAnchor.getElement().setAttribute("target", "_blank");
-
-                    Button viewPdfButton = new Button("View PDF", event -> {
-                        Page page = getUI().get().getPage();
-                        page.open(String.valueOf(streamResource), "_blank");
-                    });
-
-                    add(pdfAnchor, viewPdfButton);
-                }*/
         } else {
-            Notification.show("not pdf type pdf");
+            Notification.show("not pdf type");
         }
     }
     private void saveContact(ContactForm.SaveEvent event)
