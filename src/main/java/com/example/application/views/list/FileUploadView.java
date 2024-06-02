@@ -146,7 +146,6 @@ public class FileUploadView extends VerticalLayout {
                else {
                    Notification.show("Already Added");
                }
-
             } else {
                 Notification.show("No file selected to add to workspace.");
             }
@@ -168,13 +167,13 @@ public class FileUploadView extends VerticalLayout {
     }
 
     private void deleteSelectedFile() {
-        FileEntity selectedFile = fileEntities.stream()
-                .filter(file -> file.getFileTitle().equals(selectedFileTitle))
-                .findFirst()
-                .orElse(null);
-        if (selectedFile != null) {
-            fileEntities.remove(selectedFile);
-            fileService.deleteFileEntity(selectedFile.getId());
+//        FileEntity selectedFile = fileEntities.stream()
+//                .filter(file -> file.getFileTitle().equals(selectedFileTitle))
+//                .findFirst()
+//                .orElse(null);
+        if (fselectedFile != null) {
+            fileEntities.remove(fselectedFile);
+            fileService.deleteFileEntity(fselectedFile.getId());
             selectedFileTitle = null;
             fileContentTextArea.clear();
             refreshGrid();
