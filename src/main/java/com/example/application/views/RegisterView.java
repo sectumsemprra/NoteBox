@@ -1,6 +1,8 @@
 
 package com.example.application.views;
+import com.example.application.data.Userr;
 import com.example.application.services.AuthService;
+import com.example.application.services.UserRepository;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
@@ -21,8 +23,10 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 public class RegisterView extends Composite {
 
     private final AuthService authServicee;
-    public RegisterView(AuthService authService) {
+    private final UserRepository userRepository;
+    public RegisterView(AuthService authService, UserRepository userRepository) {
         this.authServicee = authService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -56,11 +60,19 @@ public class RegisterView extends Composite {
         } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
         } else {
-            authServicee.register(username, password1, institute);
-            //suserService.saveSUser(suser);
 
-            Notification.show("Registered");
-            UI.getCurrent().navigate("/");
+            Userr alreadyExists = userRepository.getByUsername(username);
+
+            if(alreadyExists == null) {
+                authServicee.register(username, password1, institute);
+                Notification.show("Registered");
+                UI.getCurrent().navigate("/");
+            }
+            else
+            {
+                Notification.show("Username already exists");
+            }
+
         }
     }
 }

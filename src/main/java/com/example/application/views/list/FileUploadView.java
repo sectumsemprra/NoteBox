@@ -66,7 +66,7 @@ public class FileUploadView extends VerticalLayout {
         finalUsername = username;
         Userr userr = authService.findByUsername(finalUsername);
         finalUserId = userr.getId();
-
+        fileContentTextArea.setVisible(false);
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
         headerLayout.add(usernameSpan);
@@ -74,6 +74,8 @@ public class FileUploadView extends VerticalLayout {
         MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
+        upload.getElement().executeJs("this.shadowRoot.querySelector('vaadin-upload-file').style.display = 'none';");
+
 
         List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username);
         existingFiles.forEach(file -> {
@@ -97,6 +99,8 @@ public class FileUploadView extends VerticalLayout {
                 fileService.saveFileEntity(fileEntity);
                 fileEntities.add(fileEntity);
                 refreshGrid();
+                upload.getElement().executeJs("this.files = []");
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -112,10 +116,13 @@ public class FileUploadView extends VerticalLayout {
 
             if (selectedFile != null) {
                 selectedFileTitle = selectedFile.getFileTitle();
+                fileContentTextArea.setVisible(true);
+
                 fileContentTextArea.setValue(selectedFile.getFileContent());
             } else {
                 selectedFileTitle = null;
                 fileContentTextArea.clear();
+                fileContentTextArea.setVisible(false);
             }
         });
 
@@ -137,9 +144,15 @@ public class FileUploadView extends VerticalLayout {
 
         addToWorkspaceButton.addClickListener(e -> {
             if (selectedFileTitle != null) {
-               fselectedFile.inPublicWorkspace = true;
-               fileService.updateFileEntity(fselectedFile);
-                Notification.show("Added to Workspace");
+               if(!fselectedFile.inPublicWorkspace)
+               {
+                   fselectedFile.inPublicWorkspace = true;
+                   fileService.updateFileEntity(fselectedFile);
+                   Notification.show("Added to Workspace");
+               }
+               else {
+                   Notification.show("Already Added");
+               }
             } else {
                 Notification.show("No file selected to add to workspace.");
             }
@@ -150,8 +163,8 @@ public class FileUploadView extends VerticalLayout {
         contentLayout.setFlexGrow(0, grid);
         contentLayout.setFlexGrow(1, fileContentTextArea);
         contentLayout.setWidth("100%");
-        grid.setWidth("40%");
-        fileContentTextArea.setWidth("60%");
+        grid.setWidth("50%");
+        fileContentTextArea.setWidth("50%");
 
         add(headerLayout, upload, contentLayout, new HorizontalLayout(deleteButton, saveButton, addToWorkspaceButton));
     }
@@ -161,13 +174,13 @@ public class FileUploadView extends VerticalLayout {
     }
 
     private void deleteSelectedFile() {
-        FileEntity selectedFile = fileEntities.stream()
-                .filter(file -> file.getFileTitle().equals(selectedFileTitle))
-                .findFirst()
-                .orElse(null);
-        if (selectedFile != null) {
-            fileEntities.remove(selectedFile);
-            fileService.deleteFileEntity(selectedFile.getId());
+//        FileEntity selectedFile = fileEntities.stream()
+//                .filter(file -> file.getFileTitle().equals(selectedFileTitle))
+//                .findFirst()
+//                .orElse(null);
+        if (fselectedFile != null) {
+            fileEntities.remove(fselectedFile);
+            fileService.deleteFileEntity(fselectedFile.getId());
             selectedFileTitle = null;
             fileContentTextArea.clear();
             refreshGrid();

@@ -12,6 +12,7 @@ public class Userr extends AbstractPerson {
     private String passwordSalt;
     private String passwordHash;
     private Role role;
+    public boolean registered = false;
     public Userr(){
 
     }
