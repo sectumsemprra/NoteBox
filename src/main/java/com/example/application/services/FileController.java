@@ -27,7 +27,7 @@ public class FileController {
         FileEntity fileEntity = fileService.getFileEntityByTitle(title);
         if (fileEntity != null) {
             if (fileEntity.getFileContent() != null && !fileEntity.textfile) {
-                byte[] pdfContent = Files.readAllBytes(Paths.get("E:/pdfs/2-2/introduction-to-probability-model-s.ross-math-cs.blog_.ir_.pdf"));
+                //byte[] pdfContent = Files.readAllBytes(Paths.get("E:/pdfs/2-2/introduction-to-probability-model-s.ross-math-cs.blog_.ir_.pdf"));
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Content-Disposition", "inline; filename=" + fileEntity.getFileTitle());
