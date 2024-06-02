@@ -2,11 +2,9 @@ package com.example.application.views;
 
 import com.example.application.data.Reminder;
 import com.example.application.data.Task;
-import com.example.application.services.CrmService;
-import com.example.application.services.ReminderService;
-import com.example.application.services.TaskService;
+import com.example.application.services.*;
 import com.example.application.views.MainLayout;
-import com.example.application.views.list.TodoListView;
+//import com.example.application.views.list.TodoListView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
@@ -18,14 +16,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.component.textfield.TextField;
 import jakarta.validation.constraints.Null;
-import com.example.application.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard | Vaadin CRM")
@@ -34,18 +31,31 @@ public class DashboardView extends HorizontalLayout {
     private final CrmService service;
     private  final TaskService taskService;
     private final ReminderService reminderService;
-    private final NotificationService notificationService;
+    private  final String username;
+   // private final AuthService authService;
 
-    public DashboardView(CrmService service,TaskService taskService,ReminderService reminderService,NotificationService notificationService) {
+
+    public DashboardView(CrmService service,TaskService taskService,ReminderService reminderService) {
 
         this.service = service;
         this.taskService=taskService;
         this.reminderService=reminderService;
-        this.notificationService=notificationService;
+        //this.authService=authService;
         setPadding(true);
         setSpacing(true);
         setWidthFull();
+        String usernam = "";
+        Object obj = null;
+        VaadinSession vaadinsession = VaadinSession.getCurrent();
 
+        if (vaadinsession != null) {
+            obj = vaadinsession.getSession().getAttribute("username");
+        }
+
+        if(obj instanceof String){
+            usernam = (String) obj;
+        }
+        username=usernam;
         // To-Do List
         VerticalLayout todoLayout = createSection("To-Do List", "blue", false,true);
 
@@ -77,18 +87,21 @@ public class DashboardView extends HorizontalLayout {
         LocalDateTime tasktime = null;
         // Retrieve previously saved tasks from the service
         if(istask) {
-            List<Task> tasks = taskService.getTasksByUsername(); // Assuming getTasksByTitle() retrieves tasks by title from the service
+           // String username = AuthService.currentUserName;
+            System.out.println("task user name is "+ username);
+            List<Task> tasks = taskService.getTasksByUsername(username); // Assuming getTasksByTitle() retrieves tasks by title from the service
             for (Task task : tasks) {
-                HorizontalLayout taskLayout = createTask(task.getTaskName(), color, showDateTimePicker, tasktime);
+                HorizontalLayout taskLayout = createTask(task.getTaskName(), color, showDateTimePicker, tasktime,task.getId(),istask);
                 layout.add(taskLayout);
             }
         }
         else {
-            List<Reminder> reminders = reminderService.getReminderByUsername();
+           // String username = AuthService.currentUserName;
+            List<Reminder> reminders = reminderService.getReminderByUsername(username);
 
             for (Reminder reminder : reminders) {
                 System.out.println(reminder.getReminderName());
-                HorizontalLayout reminderLayout = createTask(reminder.getReminderName(), color, showDateTimePicker, reminder.getReminderTime());
+                HorizontalLayout reminderLayout = createTask(reminder.getReminderName(), color, showDateTimePicker, reminder.getReminderTime(),reminder.getId(),istask);
                 layout.add(reminderLayout);
             }
         }
@@ -98,7 +111,7 @@ public class DashboardView extends HorizontalLayout {
         return layout;
     }
 
-    private HorizontalLayout createTask(String taskName, String color, boolean showDateTimePicker, LocalDateTime time) {
+    private HorizontalLayout createTask(String taskName, String color, boolean showDateTimePicker, LocalDateTime time,Long id, boolean isTask) {
         HorizontalLayout taskLayout = new HorizontalLayout();
         taskLayout.setSpacing(true);
 
@@ -113,6 +126,18 @@ public class DashboardView extends HorizontalLayout {
             Span timeSpan = new Span("Reminder Time: " + time.toString());
             taskLayout.add(timeSpan);
         }
+        checkbox.addValueChangeListener(event -> {
+            if (event.getValue()) {
+                if (isTask) {
+                    taskService.delete(id);
+                } else {
+                    reminderService.delete(id);
+                }
+                // Remove the task layout from the parent layout when checkbox is checked
+                taskLayout.getParent().ifPresent(parent -> ((VerticalLayout) parent).remove(taskLayout));
+            }
+        });
+
 
         return taskLayout;
     }
@@ -125,13 +150,20 @@ public class DashboardView extends HorizontalLayout {
         reminderPicker.setLabel("Reminder Time");
 
         Button saveButton = new Button("Add", event -> {
-            HorizontalLayout task = createTask(taskField.getValue(), color, showDateTimePicker,reminderPicker.getValue());
+
             if (showDateTimePicker) {
-                reminderService.add_reminder(taskField.getValue(), reminderPicker.getValue());
+                //String username= AuthService.currentUserName;
+               long id= reminderService.add_reminder(taskField.getValue(), reminderPicker.getValue(),username);
+                HorizontalLayout task = createTask(taskField.getValue(), color, showDateTimePicker,reminderPicker.getValue(),id,showDateTimePicker);
+                layout.add(task);
             } else {
-                taskService.add_task(taskField.getValue());
+               // String username= AuthService.currentUserName;
+               long id= taskService.add_task(taskField.getValue(), username);
+                HorizontalLayout task = createTask(taskField.getValue(), color, showDateTimePicker,reminderPicker.getValue(),id,showDateTimePicker);
+                layout.add(task);
             }
-            layout.add(task);
+
+
             dialog.close();
         });
 
