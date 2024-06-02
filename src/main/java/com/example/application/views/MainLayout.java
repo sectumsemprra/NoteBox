@@ -65,6 +65,9 @@ public class MainLayout extends AppLayout {
         RouterLink fileUploadLink = new RouterLink("File Upload", FileUploadView.class);
 
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
+        listLink.setClassName("link");
+        dashboardlink.setClassName("link");
+        fileUploadLink.setClassName("link");
 
         addToDrawer(new VerticalLayout(
                 listLink,

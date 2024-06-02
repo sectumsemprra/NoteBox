@@ -38,7 +38,7 @@ public class MainView extends VerticalLayout {
         login.addClickListener(e -> UI.getCurrent().navigate("/login"));
         Button signup = new Button("Sign Up");
         signup.addClassName("custom-button-white");
-        signup.addClickListener(e -> UI.getCurrent().navigate("/login"));
+        signup.addClickListener(e -> UI.getCurrent().navigate("/register"));
 
         navBar.add(login, signup);
         header.add(logo, navBar);
@@ -105,7 +105,7 @@ public class MainView extends VerticalLayout {
 
         VerticalLayout foot = new VerticalLayout();
         // Content of the footer
-        Span text = new Span("© 2024 Your Company. All rights reserved.");
+        Span text = new Span("© 2024 Notebox. All rights reserved.");
         text.addClassName("footer-text");
         Anchor privacyLink = new Anchor("#", "Privacy Policy");
         privacyLink.setClassName("footer-text");
