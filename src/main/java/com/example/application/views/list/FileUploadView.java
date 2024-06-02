@@ -18,6 +18,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
@@ -25,6 +26,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -169,25 +171,37 @@ public class FileUploadView extends VerticalLayout {
             }
         });
 
-//
-//        Anchor downloadAnchor = new Anchor(resource, "");
-//        downloadAnchor.getElement().setAttribute("download", true);
-//        downloadAnchor.getElement().setAttribute("style", "display: none;");
-//
-//
-//        Button downloadButton = new Button("Download", event -> {
-//            downloadAnchor.getElement().callJsFunction("click");
-//        });
+
+
+
+
+
+
+
+
+
+
 
         downloadButton.addClickListener(e -> {
-            if (selectedFileTitle != null) {
-                deleteSelectedFile();
+            if (selectedFileTitle != null && fselectedFile.textfile) {
+                String fileContent = fileService.getTextFileContent(fselectedFile.getId());
+                StreamResource resource = new StreamResource(fselectedFile.getFileTitle() + ".txt",
+                        () -> new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8)));
+                resource.setContentType("text/plain");
+
+                Anchor downloadAnchor = new Anchor(resource, "");
+                downloadAnchor.getElement().setAttribute("download", true);
+                downloadAnchor.getElement().setAttribute("style", "display: none;");
+                add(downloadAnchor);
+
+                // Trigger download and then remove the anchor
+                downloadAnchor.getElement().executeJs("this.click();").then(result -> {
+                    remove(downloadAnchor);
+                });
             } else {
-                Notification.show("No file selected to delete.");
+                Notification.show("No file selected to download.");
             }
         });
-
-
 
         deleteButton.addClickListener(e -> {
             if (selectedFileTitle != null) {
