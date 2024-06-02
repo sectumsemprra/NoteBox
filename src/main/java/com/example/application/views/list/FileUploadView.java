@@ -137,9 +137,16 @@ public class FileUploadView extends VerticalLayout {
 
         addToWorkspaceButton.addClickListener(e -> {
             if (selectedFileTitle != null) {
-               fselectedFile.inPublicWorkspace = true;
-               fileService.updateFileEntity(fselectedFile);
-                Notification.show("Added to Workspace");
+               if(!fselectedFile.inPublicWorkspace)
+               {
+                   fselectedFile.inPublicWorkspace = true;
+                   fileService.updateFileEntity(fselectedFile);
+                   Notification.show("Added to Workspace");
+               }
+               else {
+                   Notification.show("Already Added");
+               }
+
             } else {
                 Notification.show("No file selected to add to workspace.");
             }

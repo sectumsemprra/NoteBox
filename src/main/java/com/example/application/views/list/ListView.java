@@ -29,6 +29,7 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.apache.catalina.webresources.FileResource;
+import org.aspectj.weaver.ast.Not;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -102,12 +103,18 @@ public class ListView extends VerticalLayout {
     }
     private void addToPersonal()
     {
-        currentFileEntity.inDashboard = true;
-        currentFileEntity.username = currentUsername;
-        Userr temp = authService.findByUsername(currentUsername);
-        currentFileEntity.userId = temp.getId();
-        fileService.updateFileEntity(currentFileEntity);
-        Notification.show("Added Successfully");
+        if(currentFileEntity.inDashboard)
+        {
+            Notification.show("Already Added");
+        }
+        else {
+            currentFileEntity.inDashboard = true;
+            currentFileEntity.username = currentUsername;
+            Userr temp = authService.findByUsername(currentUsername);
+            currentFileEntity.userId = temp.getId();
+            fileService.updateFileEntity(currentFileEntity);
+            Notification.show("Added Successfully");
+        }
     }
 
     private Component getContent() {
