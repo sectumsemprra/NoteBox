@@ -105,7 +105,7 @@ public class MainView extends VerticalLayout {
 
         VerticalLayout foot = new VerticalLayout();
         // Content of the footer
-        Span text = new Span("© 2024 Your Company. All rights reserved.");
+        Span text = new Span("© 2024 Notebox. All rights reserved.");
         text.addClassName("footer-text");
         Anchor privacyLink = new Anchor("#", "Privacy Policy");
         privacyLink.setClassName("footer-text");

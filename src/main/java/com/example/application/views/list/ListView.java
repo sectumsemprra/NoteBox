@@ -74,6 +74,7 @@ public class ListView extends VerticalLayout {
         this.authService = authService;
 
 
+        //fileService.deleteAll();
         String username = "";
         Object obj = null;
         // Retrieve the current username

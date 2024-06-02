@@ -4,11 +4,41 @@
 
 #login-view {
     display: grid;
-    padding: 1%;
+    padding: 0;
+    margin: 0;
 }
 
 .mainbg{
-    background: #b6b6b6;
+    background: #adaaaa;
+}
+
+.loginbg{
+    background: #eacd94;
+    margin: 0;
+    padding: 0;
+    /*background-image: url('E:/coding/2-2 project practice/NoteBox-main/frontend/paper.jpg');
+    /*background-image: url('E:/coding/2-2 project practice/NoteBox-main/frontend/themes/flowcrmtutorial/loginbg.jpg');
+    background-size: cover;
+     */
+    /*justify-content: center;
+    align-items: center;
+    height: 100vh;*/
+}
+
+vaadin-text-field::part(label){
+    color: black;
+}
+
+vaadin-password-field::part(label){
+    color: black;
+}
+
+vaadin-password-field > label{
+    color: black;
+}
+
+.plsnospace{
+    display: flex
 }
 
 :host {
@@ -22,6 +52,11 @@
 .logo{
     font-family: 'Jeju Myeongjo', serif;
     color: #cccccc;
+}
+
+.login-name{
+    font-family: 'Jeju Myeongjo', serif;
+    color: #000000;
 }
 
 /* styles.css */
@@ -85,8 +120,23 @@ vaadin-drawer-toggle::part(icon)::before{
     border: 2px solid #2a2828; /* Green border */
 }
 
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    /* Set the height of the container to the viewport height */
+}
+
 .link{
     color: #cccccc;
+    font-family: 'Jeju Myeongjo', serif;
+}
+
+.linkb{
+    color: #0e0101;
     font-family: 'Jeju Myeongjo', serif;
 }
 
@@ -110,7 +160,15 @@ vaadin-drawer-toggle::part(icon)::before{
 .product-image {
     width: 100px;
     height: 100px;
-    background: #cccccc
+    background: #cccccc;
+    border-radius: 20px;
+}
+
+.dash-image{
+    width: 170px;
+    height: 200px;
+    background: #cccccc;
+    border-radius: 20px;
 }
 
 .product-name {
@@ -119,8 +177,19 @@ vaadin-drawer-toggle::part(icon)::before{
     margin-top: 10px;
 }
 
+.dash-name{
+    font-family: 'Javanese Text', serif;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
 .product-description {
     font-family: 'Jockey One', serif;
+    margin-top: 5px;
+}
+
+.dash-description{
+    font-family: 'Javanese Text', serif;
     margin-top: 5px;
 }
 
@@ -149,7 +218,7 @@ body {
 }
 
 .hero-section {
-    background-image: url("D:/0. Acadmic stuff/CSE '21/Sem-4/NOTEBOX2.0/frontend/paper.jpg");
+    background-image: url("E:/coding/2-2 project practice/NoteBox-main/frontend/paper.jpg");
     display: flex;
     align-items: center;
     justify-content: center;
@@ -166,6 +235,65 @@ body {
     padding: 20px;
     border-radius: 5px;
     font-family: 'Jockey One', serif;
+}
+
+.dashboard-name{
+    color: #030000;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 60px;
+    font-family: 'Jeju Myeongjo', serif;
+}
+
+vaadin-upload > vaadin-button{
+    background-color: #181818; /* Green background */
+    color: #cbc3c3; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 12px; /* Rounded corners */
+    padding: 15px 32px; /* Padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* Remove default text underline */
+    display: inline-block; /* Display inline-block */
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margin */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition-duration: 0.4s; /* Transition duration for hover effect */
+    font-family: 'Jeju Myeongjo', serif;
+}
+
+vaadin-upload{
+    align-items: center;
+}
+
+.upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.upload-button {
+    margin-right: 10px;
+}
+
+.upload-drop-label {
+    margin-left: 10px;
+}
+
+vaadin-upload-file[complete]{
+    color: black;
+}
+
+vaadin-upload > [slot="drop-label-icon"]{
+    box-sizing: border-box;
+}
+
+.dash-small{
+    color: #0e0101;
+    font-size: 20px;
+    font-family: 'Javanese Text', serif;
 }
 
 .span-text{
@@ -226,4 +354,27 @@ body {
 .footer-text{
     color: #cccccc;
     font-family: 'Jeju Myeongjo', serif;
+}
+
+.note {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+}
+
+.notes-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    border: 1px solid #ccc;
+    overflow-x: auto;
+    padding: 5px;
+    width: 60%;
 }
