@@ -52,7 +52,7 @@ public class RegisterView extends Composite {
         } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
         } else {
-            authServicee.register(username, password1);
+            authServicee.register(username, password1,"");
             //suserService.saveSUser(suser);
 
             Notification.show("Registered");

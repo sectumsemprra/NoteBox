@@ -29,6 +29,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class AuthService {
 
@@ -40,6 +42,8 @@ public class AuthService {
 
     }
     private final UserRepository userRepo;
+    private Userr currentUser;
+    //private String instituteName;
     private  final ReminderService reminderService;
     public static String currentUserName = "";
    // private final ReminderScheduler reminderScheduler;
@@ -60,7 +64,7 @@ public class AuthService {
             UI ui = UI.getCurrent();
             currentUserName = username;
             createRoutes(userr.getRole());
-
+             currentUser=userr;
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(() -> checkReminder(vaadinSession,ui), 0, 6, TimeUnit.SECONDS);
         }
@@ -125,9 +129,26 @@ public class AuthService {
                     ListView.class, AdminLayout.class);
         }
     }
+    @Transactional
+    public void updateUser(String newPassword,String institute) {
+        if (!newPassword.trim().isEmpty()) {
+            // Create a new user with the updated password and the same username and role
+            Userr newUser = new Userr(currentUser.getUsername(), newPassword, currentUser.getRole(),institute);
+             System.out.println(currentUser.getUsername()+"heheh");
+            // Delete the current user
+            userRepo.deleteByUsername(currentUser.getUsername());
 
-    public void register(String username, String pass){
-        userRepo.save(new Userr(username, pass, Role.USER));
+            // Save the updated user
+            userRepo.save(newUser);
+        } else {
+            // Handle the case when the new password is empty
+            // For example, you can throw an exception or log a message
+            System.out.println("New password cannot be empty.");
+        }
+    }
+
+    public void register(String username, String pass, String institute){
+        userRepo.save(new Userr(username, pass, Role.USER, institute));
         UI.getCurrent().navigate("/");
     }
 
@@ -141,7 +162,10 @@ public class AuthService {
     {
         return userRepo.getByUsername(currentUserName);
     }
-
+    public String getInstituteName()
+    {
+        return currentUser.getInstitute();
+    }
     /*public List<AuthorizedRoutes> getAuthorizedRoutes(Role role){
         var routes = new ArrayList<AuthorizedRoutes>();
 
