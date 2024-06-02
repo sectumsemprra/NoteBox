@@ -40,6 +40,7 @@ public class FileForm extends FormLayout {
     //Button delete = new Button("Delete");
     Button close = new Button("Close");
     Button addToPersonal = new Button("Add to personal");
+    Button viewFile = new Button("View File");
 
 
     public FileForm(List<Company> companies, List<Status> statuses) {
@@ -77,18 +78,21 @@ public class FileForm extends FormLayout {
        // delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addToPersonal.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        viewFile.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
 
     //    save.addClickListener(event -> validateAndSave());
   //      delete.addClickListener(event -> fireEvent(new DeleteEvent(this, contact)));
         close.addClickListener(event -> fireEvent(new CloseEvent(this)));
         addToPersonal.addClickListener(event -> fireEvent(new AddToPersonalEvent(this)));
+        viewFile.addClickListener(event -> fireEvent(new FileViewEvent(this)));
 
        // binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
 
         //save.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ENTER);
 
-        return new HorizontalLayout(close, addToPersonal);
+        return new HorizontalLayout(close, addToPersonal, viewFile);
     }
     private void validateAndSave() {
 //        try {
@@ -134,6 +138,12 @@ public class FileForm extends FormLayout {
 
     public static class AddToPersonalEvent extends FileFormEvent {
         AddToPersonalEvent(FileForm source) {
+            super(source, null);
+        }
+    }
+
+    public static class FileViewEvent extends FileFormEvent {
+        FileViewEvent(FileForm source) {
             super(source, null);
         }
     }

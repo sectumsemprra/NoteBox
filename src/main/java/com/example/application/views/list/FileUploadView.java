@@ -22,6 +22,8 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,7 @@ public class FileUploadView extends VerticalLayout {
         MultiFileMemoryBuffer buffer = new MultiFileMemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setUploadButton(new Button("Upload Files"));
+        upload.setAcceptedFileTypes("application/pdf", "text/plain");
 
         List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username);
         existingFiles.forEach(file -> {
@@ -85,17 +88,21 @@ public class FileUploadView extends VerticalLayout {
 
         upload.addSucceededListener(event -> {
             String fileName = event.getFileName();
+            String substr = fileName.substring(fileName.length()-3);
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(buffer.getInputStream(fileName)));
-                String contents = reader.lines().collect(Collectors.joining("\n"));
+                //BufferedReader reader = new BufferedReader(new InputStreamReader(buffer.getInputStream(fileName)));
+                //String contents = reader.lines().collect(Collectors.joining("\n"));
+                byte[] contents = buffer.getInputStream(fileName).readAllBytes();
                 String us = finalUsername;
 
-                FileEntity fileEntity = new FileEntity(finalUserId, fileName, contents, us);
+                FileEntity fileEntity = new FileEntity(finalUserId, fileName, contents, us, substr);
                 fileEntity.inDashboard = true;
                 fileEntity.setUploadDate(LocalDateTime.now());
                 fileEntity.setUserInstitute(userr.getInstitute());
                 fileService.saveFileEntity(fileEntity);
                 fileEntities.add(fileEntity);
+
+                Notification.show(fileEntity.getFileTitle() + " has been uploaded" + fileEntity.textfile);
                 refreshGrid();
 
             } catch (Exception e) {
@@ -112,7 +119,10 @@ public class FileUploadView extends VerticalLayout {
 
             if (selectedFile != null) {
                 selectedFileTitle = selectedFile.getFileTitle();
-                fileContentTextArea.setValue(selectedFile.getFileContent());
+                if(selectedFile.textfile) {
+                    fileContentTextArea.setValue( new String(selectedFile.getFileContent(), StandardCharsets. UTF_8));
+                }
+                else Notification.show("Type not supported");
             } else {
                 selectedFileTitle = null;
                 fileContentTextArea.clear();
@@ -181,7 +191,7 @@ public class FileUploadView extends VerticalLayout {
                 .orElse(null);
         if (selectedFile != null) {
             String newContent = fileContentTextArea.getValue();
-            selectedFile.setFileContent(newContent);
+            selectedFile.setFileContent(newContent.getBytes(Charset.forName("UTF-8")));
             fileService.saveFileEntity(selectedFile);
             Notification.show("Changes saved successfully", 2000, Notification.Position.MIDDLE);
         }
