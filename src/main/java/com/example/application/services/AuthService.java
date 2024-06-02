@@ -1,5 +1,6 @@
 package com.example.application.services;
 
+import com.example.application.data.Reminder;
 import com.example.application.data.Userr;
 import com.example.application.data.Role;
 import com.example.application.views.AdminLayout;
@@ -8,6 +9,8 @@ import com.example.application.views.MainLayout;
 import com.example.application.views.list.FileUploadView;
 import com.example.application.views.list.ListView;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouteConfiguration;
@@ -18,10 +21,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 @Service
 public class AuthService {
 
@@ -33,11 +40,14 @@ public class AuthService {
 
     }
     private final UserRepository userRepo;
+    private  final ReminderService reminderService;
     public static String currentUserName = "";
    // private final ReminderScheduler reminderScheduler;
-    public AuthService(UserRepository user){
+    public AuthService(UserRepository user, ReminderService reminderService){
         this.userRepo = user;
-        //this.reminderScheduler=reminderScheduler;
+        //this.reminderScheduler=r
+        // eminderScheduler;
+        this.reminderService=reminderService;
     }
 
     public void authenticate(String username, String password) throws AuthException{
@@ -46,13 +56,49 @@ public class AuthService {
             Notification.show(username + " has logged in");
             VaadinSession.getCurrent().getSession().setAttribute("username", username);
             VaadinServletService.getCurrentServletRequest().getSession().setAttribute("name", username);
-
-
+            VaadinSession vaadinSession = VaadinSession.getCurrent();
+            UI ui = UI.getCurrent();
             currentUserName = username;
             createRoutes(userr.getRole());
+
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            scheduler.scheduleAtFixedRate(() -> checkReminder(vaadinSession,ui), 0, 6, TimeUnit.SECONDS);
         }
         else{
             throw new AuthException();
+        }
+    }
+    private void checkReminder(VaadinSession vaadinSession, UI ui) {
+        if (vaadinSession != null && ui != null) {
+            vaadinSession.access(() -> {
+                String username = (String) vaadinSession.getSession().getAttribute("username");
+                if (username != null && !username.isEmpty()) {
+                    System.out.println("checking1111");
+                    System.out.println(username);
+
+                    List<Reminder> reminders = reminderService.getReminderByUsername(username);
+                    LocalDateTime now = LocalDateTime.now();
+
+                    for (Reminder reminder : reminders) {
+                        if (reminder.getReminderTime().isBefore(now) || reminder.getReminderTime().isEqual(now)) {
+                            //reminderService.delete(reminder.getId()); // Remove or mark as sent
+                            System.out.println("reminder for you");
+
+                            CompletableFuture.runAsync(() -> ui.access(() -> {
+                                Dialog dialog = new Dialog();
+                                dialog.add("Reminder for: " + username);
+
+                                Button closeButton = new Button("Close", event -> dialog.close());
+                                dialog.add(closeButton);
+
+                                dialog.open();
+                            }));
+                        }
+                    }
+                }
+            });
+        } else {
+            System.out.println("VaadinSession or UI is null");
         }
     }
 

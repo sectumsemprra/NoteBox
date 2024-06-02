@@ -3,6 +3,7 @@ package com.example.application.services;
 import com.example.application.data.Reminder;
 import com.example.application.services.AuthService;
 import com.example.application.services.ReminderService;
+import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,15 +17,29 @@ import java.util.List;
 @Component
 public class ReminderScheduler {
 
+
+
     private static final Logger logger = LoggerFactory.getLogger(ReminderScheduler.class);
 
     @Autowired
     private ReminderService reminderService;
 
-    @Scheduled(fixedRate = 6000) // Runs every minute
+    //@Scheduled(fixedRate = 6000) // Runs every minute
     public void checkReminders() {
+        String username;
+        String usernam = "";
+        Object obj = null;
+        VaadinSession vaadinsession = VaadinSession.getCurrent();
+        if (vaadinsession != null) {
+            obj = vaadinsession.getSession().getAttribute("username");
+        }
+        if(obj instanceof String){
+            usernam = (String) obj;
+        }
+        username=usernam;
         System.out.println("checking");
-        String username = AuthService.currentUserName;
+       // String username = AuthService.currentUserName;
+        System.out.println(username);
         if (!username.isEmpty()) {
             List<Reminder> reminders = reminderService.getReminderByUsername(username);
             LocalDateTime now = LocalDateTime.now();
