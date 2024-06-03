@@ -15,7 +15,6 @@ public class Userr extends AbstractPerson {
     private String passwordSalt;
     private String passwordHash;
     private Role role;
-    private String institute;
     public boolean registered = false;
 
     public Userr(){
@@ -52,7 +51,6 @@ public class Userr extends AbstractPerson {
     public void setRole(Role role) {
         this.role = role;
     }
-    public void setInstitute(String institute){ this.institute = institute;}
 
 
     public String getPasswordHash() {
@@ -66,8 +64,6 @@ public class Userr extends AbstractPerson {
     public String getUsername() {
         return username;
     }
-
-    public String getInstitute(){return institute;}
 
     public void setUsername(String username) {
         this.username = username;

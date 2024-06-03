@@ -12,6 +12,10 @@
     background: #adaaaa;
 }
 
+.settingsbg{
+    background: #e0dddd;
+}
+
 .loginbg{
     background: #eacd94;
     margin: 0;
@@ -230,8 +234,57 @@ body {
 
 }
 
+.teambg{
+    background-color: #cccccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background: #5d5d5d;*/
+    background-size: cover;
+    color: white;
+    text-align: center;
+}
+
+.almost-hero{
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    /*background: #5d5d5d;*/
+    background-size: cover;
+    color: white;
+    text-align: center;
+}
+
+.rmbg{
+    background-image: url('E:/coding/2-2 project practice/NoteBox-main/frontend/readmore.jpg');
+    filter: grayscale(50%)
+}
+
+.rm-text{
+    color: #ffffff;
+    padding: 20px;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+    font-family: 'Jockey One', serif;
+}
+
+.ah-text{
+    color: #000000;
+    padding: 20px;
+    border-radius: 5px;
+    font-family: 'Jockey One', serif;
+}
+
+.ah-span-text{
+    color: #000000;
+    padding: 20px;
+    font-family: 'Javanese Text', serif;
+}
+
 .hero-text {
-    color: #cccccc;
+    color: #dcdcdc;
     padding: 20px;
     border-radius: 5px;
     font-family: 'Jockey One', serif;
@@ -324,6 +377,7 @@ vaadin-upload > [slot="drop-label-icon"]{
     background-color: #f9f9f9;
 }
 
+
 .content-box {
     background: white;
     padding: 20px;
@@ -377,4 +431,64 @@ vaadin-upload > [slot="drop-label-icon"]{
     overflow-x: auto;
     padding: 5px;
     width: 60%;
+}
+
+.custom-card {
+    position: relative;
+    width: 200px; /* Adjust the width as needed */
+    text-align: center;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    overflow: hidden;
+    padding: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #3a3a3a;
+    height: 300px;
+}
+
+.imagee-containerr {
+    position: absolute;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 100px;
+    height:200px
+}
+
+.profile-image {
+    width: 100%;
+    border-bottom: 5px solid #ffffff;
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 100px;
+    height: 200px;
+}
+
+.text-container {
+    position: relative;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    background-color: #ffffff;
+    color: white;
+    padding: 10px 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.card-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #cccccc;
+    font-family: 'Jockey One', serif;
+}
+
+.card-title {
+    font-size: 0.9em;
+    color: #cccccc; /* Lighter color for the title */
+    font-family: 'Jeju Myeongjo', serif;
 }

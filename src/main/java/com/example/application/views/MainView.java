@@ -93,6 +93,7 @@ public class MainView extends VerticalLayout {
         contentDescription.addClassName("hero-text-span");
         Button contentButton = new Button(buttonText);
         contentButton.addClassName("custom-button-black");
+        contentButton.addClickListener(e->UI.getCurrent().navigate("/aboutus"));
 
         contentBox.add(contentTitle, contentDescription, contentButton);
         contentBox.setAlignItems(Alignment.CENTER);

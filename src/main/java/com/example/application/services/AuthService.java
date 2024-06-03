@@ -149,7 +149,7 @@ public class AuthService {
     }
 
     public void register(String username, String pass, String institute, String firstName, String lastName){
-        Userr userr = new Userr(username, pass, Role.USER);
+        Userr userr = new Userr(username, pass, Role.USER, institute);
         userr.setInstitute(institute);
         userr.setFirstName(firstName);
         userr.setLastName(lastName);
