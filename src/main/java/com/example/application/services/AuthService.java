@@ -94,6 +94,8 @@ public class AuthService {
                                 dialog.add("Reminder for: " + username);
 
                                 Button closeButton = new Button("Close", event -> dialog.close());
+                                reminderService.delete(reminder.getId());
+                                UI.getCurrent().navigate(ListView.class);
                                 dialog.add(closeButton);
 
                                 dialog.open();

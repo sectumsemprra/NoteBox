@@ -280,7 +280,7 @@ public class ListView extends VerticalLayout {
         //grid.addClassNames("product-tile");
         grid.setSizeFull();
 
-        grid.addComponentColumn(this::createUserTile).setHeader("Users");
+        grid.addComponentColumn(this::createUserTile).setHeader("Notes");
         //grid.addComponentColumn(this::createUserTile).setHeader("");
 
 
