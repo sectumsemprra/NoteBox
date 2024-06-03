@@ -92,6 +92,13 @@ public class FileUploadView extends VerticalLayout {
         Span usernameSpan = new Span(fullname+"'s Home");
         usernameSpan.addClassName("dashboard-name");
         usernameSpan.getStyle().set("margin-right", "auto");
+        usernameSpan.getElement().getStyle().set("height", "55px");
+        usernameSpan.getElement().getStyle().set("font-size", "45px");
+        usernameSpan.getElement().getStyle().set("font-weight", "bold");
+        usernameSpan.getElement().getStyle().set("font-family", "Javanese Text");
+
+        usernameSpan.getElement().getStyle().set("display", "inline-block");
+
 
         Span noteText = new Span("Notes");
         noteText.addClassName("dash-small");
@@ -316,9 +323,9 @@ public class FileUploadView extends VerticalLayout {
         scratchpad.add(upload, spText, fileContentTextArea, hll);
         fileContentTextArea.setWidth("560px");
         fileContentTextArea.setMinWidth("560px");
-        fileContentTextArea.setMinHeight("400px");
+        fileContentTextArea.setMinHeight("380px");
         fileContentTextArea.getStyle().set("overflow", "auto");
-        fileContentTextArea.getStyle().set("max-height", "400px");
+        fileContentTextArea.getStyle().set("max-height", "380px");
         hll.setWidth("500px");
 
 
@@ -371,6 +378,7 @@ public class FileUploadView extends VerticalLayout {
                         String fileUrl = UriComponentsBuilder.fromUriString("/filess")
                                 .queryParam("title", fselectedFile.getFileTitle())
                                 .toUriString();
+                        fileContentTextArea.setValue("");
 
                         Dialog dialog = getDialog(fileUrl);
                         dialog.open();
