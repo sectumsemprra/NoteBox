@@ -24,13 +24,13 @@ public class FileControllerFromDash {
     private FileService fileService;
 
     @GetMapping
-    public ResponseEntity<byte[]> getFile(@RequestParam String title) throws IOException {
-        return getResponseEntity(title, fileService);
+    public ResponseEntity<byte[]> getFile(@RequestParam int id) throws IOException {
+        return getResponseEntity(id, fileService);
     }
 
     @NotNull
-    static ResponseEntity<byte[]> getResponseEntity(@RequestParam String title, FileService fileService) {
-        FileEntity fileEntity = fileService.getFileEntityByTitle(title);
+    static ResponseEntity<byte[]> getResponseEntity(@RequestParam int id, FileService fileService) {
+        FileEntity fileEntity = fileService.getFileEntityById(id);
         if (fileEntity != null) {
             if (fileEntity.getFileContent() != null && !fileEntity.textfile) {
                 //byte[] pdfContent = Files.readAllBytes(Paths.get("E:/pdfs/2-2/introduction-to-probability-model-s.ross-math-cs.blog_.ir_.pdf"));
@@ -45,11 +45,11 @@ public class FileControllerFromDash {
                 //return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
                 return new ResponseEntity<>(fileEntity.getFileContent(), headers, HttpStatus.OK);
             } else {
-                System.err.println("File content is null or not a PDF for file title: " + title);
+                System.err.println("File content is null or not a PDF for file title: " + fileEntity.getFileTitle());
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
-        System.err.println("File entity not found for file title: " + title);
+        System.err.println("File entity not found for file id: " + id);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

@@ -3,8 +3,10 @@ package com.example.application.views;
 import com.example.application.security.SecurityService;
 import com.example.application.views.list.FileUploadView;
 import com.example.application.views.list.ListView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -23,20 +25,26 @@ public class AdminLayout extends AppLayout {
     }
     private void createHeader() {
         H1 logo = new H1("NoteBox");
-        logo.addClassNames("text-l", "m-m");
+        logo.addClassName("logo");
 
-        //Button logoutbtn = new Button("Log out", e->securityService.logout());
+        Button logoutbtn = new Button("Log out", e -> LogoutView.logout());
+        logoutbtn.addClassName("custom-button-white");
+
+        Button settingsButton = new Button("Settings");
+        settingsButton.addClassName("custom-button-white");
+        settingsButton.addClickListener(e -> UI.getCurrent().navigate("/settings"));
 
         HorizontalLayout header = new HorizontalLayout(
                 new DrawerToggle(),
-                logo
-                //logoutbtn
+                logo,
+                settingsButton,
+                logoutbtn
         );
 
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(logo);
         header.setWidth("100%");
-        header.addClassNames("py-0", "px-m");
+        header.addClassNames("header");
 
         addToNavbar(header);
 
@@ -47,6 +55,9 @@ public class AdminLayout extends AppLayout {
         RouterLink uploadData = new RouterLink("Upload", FileUploadView.class);
         RouterLink dashboardlink = new RouterLink("Dashboard", DashboardView.class);
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
+        listLink.setClassName("link");
+        dashboardlink.setClassName("link");
+        uploadData.setClassName("link");
 
         addToDrawer(new VerticalLayout(
                 listLink,
