@@ -109,7 +109,7 @@ public class ListView extends VerticalLayout {
     }
     private void addToPersonal()
     {
-        if(currentFileEntity.inDashboard)
+        if(currentFileEntity.inDashboard && currentFileEntity.username.equals(currentUsername))
         {
             Notification.show("Already Added");
         }
@@ -118,6 +118,8 @@ public class ListView extends VerticalLayout {
             currentFileEntity.username = currentUsername;
             Userr temp = authService.findByUsername(currentUsername);
             currentFileEntity.userId = temp.getId();
+
+
             fileService.updateFileEntity(currentFileEntity);
             Notification.show("Added Successfully");
         }

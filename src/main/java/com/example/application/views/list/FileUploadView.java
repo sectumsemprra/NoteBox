@@ -116,6 +116,7 @@ public class FileUploadView extends VerticalLayout {
             if (selectedFileTitle != null) {
                 if (!fselectedFile.inPublicWorkspace) {
                     fselectedFile.inPublicWorkspace = true;
+                    //fselectedFile.username = uss.getUsername();
                     fileService.updateFileEntity(fselectedFile);
                     Notification.show("Added to Workspace");
                 } else {

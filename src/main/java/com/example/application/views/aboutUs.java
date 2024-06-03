@@ -80,8 +80,6 @@ public class aboutUs extends VerticalLayout{
         heroSection.add(textLayout);
         heroSection.setWidthFull();
         add(heroSection);
-
-
     }
 
     private void createTeamSection(){
