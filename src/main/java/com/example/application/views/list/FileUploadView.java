@@ -317,6 +317,8 @@ public class FileUploadView extends VerticalLayout {
         fileContentTextArea.setWidth("560px");
         fileContentTextArea.setMinWidth("560px");
         fileContentTextArea.setMinHeight("400px");
+        fileContentTextArea.getStyle().set("overflow", "auto");
+        fileContentTextArea.getStyle().set("max-height", "400px");
         hll.setWidth("500px");
 
 
@@ -330,7 +332,7 @@ public class FileUploadView extends VerticalLayout {
         contentLayout.setSizeFull();
         //contentLayout.setFlexGrow(0, grid);
         //contentLayout.setFlexGrow(0, fileContentTextArea);
-        nt.setWidth("60%");
+        nt.setWidth("50%");
         nt.setHeightFull();
         scratchpad.setWidth("40%");
         scratchpad.setHeightFull();
