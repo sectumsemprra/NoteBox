@@ -63,7 +63,7 @@ public class FileUploadView extends VerticalLayout {
     private FileEntity fselectedFile;
     private String selectedFileTitle;
     private final String finalUsername;
-    private final int finalUserId;
+    private int finalUserId = 0;
     private final UserRepository userRepo;
 
     public FileUploadView(AuthService authService, FileService fileService, UserRepository userrep) {
@@ -130,7 +130,7 @@ public class FileUploadView extends VerticalLayout {
 
         finalUsername = username;
         Userr userr = authService.findByUsername(finalUsername);
-        finalUserId = userr.getId();
+        if(userr != null) finalUserId = userr.getId();
         //fileContentTextArea.setVisible(false);
 
         fileContentTextArea.getStyle().set("overflow", "auto");
