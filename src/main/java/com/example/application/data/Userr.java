@@ -27,6 +27,7 @@ public class Userr extends AbstractPerson {
         this.passwordHash = DigestUtils.md5DigestAsHex((password+this.passwordSalt).getBytes());
         this.role = role;
         this.institute=institute;
+        this.password=password;
     }
 
     public boolean checkPassword(String password){
@@ -39,6 +40,10 @@ public class Userr extends AbstractPerson {
     public String getInstitute() {
         return institute;
     }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password){this.password=password;}
     public void setInstitute(String institute){ this.institute=institute;}
     public void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;

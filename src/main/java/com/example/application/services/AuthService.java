@@ -6,6 +6,7 @@ import com.example.application.data.Role;
 import com.example.application.views.AdminLayout;
 import com.example.application.views.LoginView;
 import com.example.application.views.MainLayout;
+import com.example.application.views.SettingsView;
 import com.example.application.views.list.FileUploadView;
 import com.example.application.views.list.ListView;
 import com.vaadin.flow.component.UI;
@@ -116,6 +117,7 @@ public class AuthService {
         configuration.removeRoute("ws");
         configuration.removeRoute("file");
         configuration.removeRoute("dashboard");
+        configuration.removeRoute("settings");
 
 
         Notification.show("matched");
@@ -124,30 +126,30 @@ public class AuthService {
             configuration.setRoute("/ws",
                     ListView.class, MainLayout.class);
             configuration.setRoute("/file", FileUploadView.class, MainLayout.class);
+            configuration.setRoute("/settings", SettingsView.class);
         }
         else if(role.equals(Role.ADMIN)){
             configuration.setRoute("/file",
                     FileUploadView.class, AdminLayout.class);
             configuration.setRoute("/ws",
                     ListView.class, AdminLayout.class);
+            configuration.setRoute("/settings", SettingsView.class);
         }
     }
     @Transactional
     public void updateUser(String newPassword,String institute) {
-        if (!newPassword.trim().isEmpty()) {
+        System.out.println(institute);
+        if (newPassword.trim().isEmpty()) { newPassword= currentUser.getPassword();}
+        System.out.println(newPassword);
             // Create a new user with the updated password and the same username and role
             Userr newUser = new Userr(currentUser.getUsername(), newPassword, currentUser.getRole(),institute);
              System.out.println(currentUser.getUsername()+"heheh");
             // Delete the current user
             userRepo.deleteByUsername(currentUser.getUsername());
-
             // Save the updated user
             userRepo.save(newUser);
-        } else {
-            // Handle the case when the new password is empty
-            // For example, you can throw an exception or log a message
-            System.out.println("New password cannot be empty.");
-        }
+            currentUser=newUser;
+
     }
 
     public void register(String username, String pass, String institute, String firstName, String lastName){
