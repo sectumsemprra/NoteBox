@@ -2,6 +2,7 @@ package com.example.application.views;
 
 import com.example.application.data.Reminder;
 import com.example.application.data.Task;
+import com.example.application.data.Userr;
 import com.example.application.services.*;
 import com.example.application.views.MainLayout;
 //import com.example.application.views.list.TodoListView;
@@ -27,16 +28,19 @@ import java.util.List;
 @Route(value = "dashboard", layout = MainLayout.class)
 @PageTitle("Dashboard | Vaadin CRM")
 @AnonymousAllowed
-public class DashboardView extends HorizontalLayout {
+public class DashboardView extends VerticalLayout {
     private final CrmService service;
+
+    private final UserRepository userRepo;
     private  final TaskService taskService;
     private final ReminderService reminderService;
     private  final String username;
    // private final AuthService authService;
 
 
-    public DashboardView(CrmService service,TaskService taskService,ReminderService reminderService) {
+    public DashboardView(CrmService service,TaskService taskService,ReminderService reminderService, UserRepository userrep) {
 
+        this.userRepo=userrep;
         this.service = service;
         this.taskService=taskService;
         this.reminderService=reminderService;
@@ -57,17 +61,31 @@ public class DashboardView extends HorizontalLayout {
         }
         username=usernam;
         // To-Do List
-        VerticalLayout todoLayout = createSection("To-Do List", "blue", false,true);
+        VerticalLayout todoLayout = createSection("To-Do List", "black", false,true);
+        todoLayout.getStyle().set("font-family", "Jockey One");
+        Userr us = userRepo.getByUsername(username);
+        String fullname="";
+        if(us!=null){
+            fullname= us.getFirstName()+" " +us.getLastName();
+        }
+        Span usernameSpan = new Span(fullname+"'s Tasks");
+        usernameSpan.addClassName("dashboard-name");
+        usernameSpan.getStyle().set("margin-right", "auto");
 
         // Reminders
-        VerticalLayout remindersLayout = createSection("Reminders", "green", true,false);
+        VerticalLayout remindersLayout = createSection("Reminders", "black", true,false);
+        remindersLayout.getStyle().set("font-family", "Jockey One");
 
+        HorizontalLayout hl = new HorizontalLayout();
         // Add components to layout
-        add(todoLayout);
-        add(remindersLayout);
+        hl.add(todoLayout);
+        hl.add(remindersLayout);
+        hl.setSizeFull();
 
         // Align items vertically in the center
-        setAlignItems(FlexComponent.Alignment.CENTER);
+        hl.setAlignItems(FlexComponent.Alignment.CENTER);
+        add(usernameSpan, hl);
+        setSizeFull();
     }
 
     private VerticalLayout createSection(String title, String color, boolean showDateTimePicker,boolean istask) {
@@ -108,6 +126,8 @@ public class DashboardView extends HorizontalLayout {
         // Add initial items if available from the service
         //service.getItems(title).forEach(item -> layout.add(createTask(item, color, showDateTimePicker)));
 
+        layout.getStyle().set("border", "1px solid #ccc");
+        layout.setSizeFull();
         return layout;
     }
 
@@ -118,12 +138,15 @@ public class DashboardView extends HorizontalLayout {
         // Checkbox for the task
         Checkbox checkbox = new Checkbox(taskName);
         checkbox.getStyle().set("color", color);
+        checkbox.getStyle().set("font-family", "Jeju Myeongjo");
         taskLayout.add(checkbox);
 
         // DateTimePicker for setting the reminder time (only for reminders)
         if (showDateTimePicker && time != null) {
             // For reminders, show the selected DateTime
             Span timeSpan = new Span("Reminder Time: " + time.toString());
+            timeSpan.getStyle().set("font-family", "Jeju Myeongjo");
+
             taskLayout.add(timeSpan);
         }
         checkbox.addValueChangeListener(event -> {
@@ -166,6 +189,7 @@ public class DashboardView extends HorizontalLayout {
 
             dialog.close();
         });
+        saveButton.addClassName("custom-button-black");
 
         dialog.add(taskField);
         if (showDateTimePicker) {

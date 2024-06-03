@@ -3,6 +3,7 @@ package com.example.application.views;
 import com.example.application.security.SecurityService;
 import com.example.application.views.list.FileUploadView;
 import com.example.application.views.list.ListView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -37,8 +38,9 @@ public class MainLayout extends AppLayout {
         Button logoutbtn = new Button("Log out", e -> LogoutView.logout());
         logoutbtn.addClassName("custom-button-white");
 
-        Button settingsButton = new Button("Settings", e -> getUI().ifPresent(ui -> ui.navigate(SettingsView.class)));
+        Button settingsButton = new Button("Settings");
         settingsButton.addClassName("custom-button-white");
+        settingsButton.addClickListener(e -> UI.getCurrent().navigate("/settings"));
 
         HorizontalLayout header = new HorizontalLayout(
                 new DrawerToggle(),
@@ -66,7 +68,7 @@ public class MainLayout extends AppLayout {
 
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
         listLink.setClassName("link");
-        dashboardlink.setClassName("link");
+        dashboardLink.setClassName("link");
         fileUploadLink.setClassName("link");
 
         addToDrawer(new VerticalLayout(
