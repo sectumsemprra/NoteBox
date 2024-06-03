@@ -91,7 +91,7 @@ public class AuthService {
 
                             CompletableFuture.runAsync(() -> ui.access(() -> {
                                 Dialog dialog = new Dialog();
-                                dialog.add("Reminder for: " + username);
+                                dialog.add(reminder.getReminderName()+" - Reminder for: " + username);
 
                                 Button closeButton = new Button("Close", event -> dialog.close());
                                 reminderService.delete(reminder.getId());
