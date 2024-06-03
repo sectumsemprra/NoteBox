@@ -1,14 +1,11 @@
 package com.example.application.views.list;
 
-import com.example.application.data.Contact;
 import com.example.application.data.Role;
 import com.example.application.data.Userr;
 import com.example.application.entity.FileEntity;
 import com.example.application.repository.FileRepository;
 import com.example.application.service.FileService;
 import com.example.application.services.AuthService;
-import com.example.application.services.ContactRepository;
-import com.example.application.services.CrmService;
 //import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -22,7 +19,6 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
@@ -31,12 +27,9 @@ import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import org.apache.catalina.webresources.FileResource;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.aspectj.weaver.ast.Not;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,8 +37,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.yaml.snakeyaml.nodes.NodeId.anchor;
 
 
 @Route(value ="/ws")
@@ -58,8 +49,7 @@ public class ListView extends VerticalLayout {
     ComboBox<String> filterOptions = new ComboBox<>();
 
     FileForm form;
-    CrmService service;
-    ContactRepository cr;
+
 
     FileService fileService;
     AuthService authService;
@@ -69,8 +59,8 @@ public class ListView extends VerticalLayout {
     public Userr currentUser;
     String uploadedFileName;
 
-    public ListView(CrmService service, FileService fileService, AuthService authService) {
-        this.service = service;
+    public ListView(FileService fileService, AuthService authService) {
+
         this.fileService = fileService;
         this.authService = authService;
 
@@ -143,7 +133,7 @@ public class ListView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new FileForm(service.findAllCompanies(), service.findAllStatuses());
+        form = new FileForm();
         form.setWidth("25em");
 
 //        form.addListener(ContactForm.SaveEvent.class, this::saveContact);
@@ -259,20 +249,8 @@ public class ListView extends VerticalLayout {
             dialog.setHeight("600px");
             dialog.open();
         } else {
-            Notification.show("Something went wrong :((");
+            Notification.show("Something went wrong");
         }
-    }
-    private void saveContact(ContactForm.SaveEvent event)
-    {
-//        service.saveContact(event.getContact());
-//        updateList();
-//        closeEditor();
-    }
-    private void deleteContact(ContactForm.DeleteEvent event)
-    {
-//        service.deleteContact(event.getContact());
-//        updateList();
-//        closeEditor();
     }
 
 
@@ -354,16 +332,7 @@ public class ListView extends VerticalLayout {
         return v;
     }
 
-    private void editContact(Contact contact) {
-//        if(contact == null)
-//        {
-//            closeEditor();
-//        }else{
-//            form.setContact(contact);
-//            form.setVisible(true);
-//            addClassName("editing");
-//        }
-    }
+
     private void editFileForm(FileEntity fileEntity) {
         if(fileEntity == null)
         {   closeEditor();
@@ -408,10 +377,7 @@ public class ListView extends VerticalLayout {
         return toolbar;
     }
 
-    private void addContact() {
-        grid.asSingleSelect().clear();
-        editContact(new Contact());
-    }
+
     private void addNotes() {
         Dialog dialog = new Dialog();
         VerticalLayout dialogLayout = new VerticalLayout();

@@ -120,7 +120,7 @@ public class AuthService {
         configuration.removeRoute("settings");
 
 
-        Notification.show("matched");
+        Notification.show("Credentials matched");
 
         if(role.equals(Role.USER)){
             configuration.setRoute("/ws",

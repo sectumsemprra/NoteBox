@@ -1,7 +1,6 @@
 package com.example.application.views.list;
 
-import com.example.application.data.Company;
-import com.example.application.data.Contact;
+
 import com.example.application.data.Status;
 import com.example.application.entity.FileEntity;
 import com.vaadin.flow.component.ComponentEvent;
@@ -43,7 +42,7 @@ public class FileForm extends FormLayout {
     Button viewFile = new Button("View File");
 
 
-    public FileForm(List<Company> companies, List<Status> statuses) {
+    public FileForm() {
         addClassName("contact-form");
         binder.bindInstanceFields(this);
 

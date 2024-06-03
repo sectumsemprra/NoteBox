@@ -460,9 +460,9 @@ public class FileUploadView extends VerticalLayout {
             String newContent = fileContentTextArea.getValue();
             selectedFile.setFileContent(newContent.getBytes(Charset.forName("UTF-8")));
             fileService.saveFileEntity(selectedFile);
-            Notification.show("Changes saved successfully", 2000, Notification.Position.MIDDLE);
+            Notification.show("Changes saved successfully");
         } else {
-            Notification.show("writtennn");
+            //Notification.show("writtennn");
             if (fileContentTextArea.getValue() != null) {
                 //Notification.show("will go to dialog");
                 nameChangeDialog();
@@ -488,7 +488,7 @@ public class FileUploadView extends VerticalLayout {
                     }
                 });
                 resource.setCacheTime(0);
-                Notification.show("file saved hopefully");
+             //   Notification.show("file saved hopefully");
 
                 FileEntity fileEntity = new FileEntity(finalUserId, newFileName, content.getBytes(), finalUsername, "txt");
                 fileEntity.inDashboard = true;

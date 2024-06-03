@@ -52,7 +52,7 @@ public class LoginView extends HorizontalLayout {
                     try{
                         authService.authenticate(username.getValue(), password.getValue());
                         setCurrentUsername(username.getValue());
-                        Notification.show("Welcome" + getCurrentUsername());
+                      //  Notification.show("Welcome " + getCurrentUsername());
 
                         UI.getCurrent().navigate("/ws");
                     }

@@ -1,6 +1,5 @@
 package com.example.application.views.list;
 
-import com.example.application.data.Contact;
 import com.example.application.entity.FileEntity;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;

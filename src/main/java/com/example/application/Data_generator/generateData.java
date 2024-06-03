@@ -1,9 +1,5 @@
 package com.example.application.Data_generator;
 
-import com.example.application.data.Contact;
-import com.example.application.data.Role;
-import com.example.application.data.Userr;
-import com.example.application.services.ContactRepository;
 import com.example.application.services.UserRepository;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 

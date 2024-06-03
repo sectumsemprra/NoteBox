@@ -29,7 +29,7 @@ import java.util.List;
 @PageTitle("Dashboard | Vaadin CRM")
 @AnonymousAllowed
 public class DashboardView extends VerticalLayout {
-    private final CrmService service;
+
 
     private final UserRepository userRepo;
     private  final TaskService taskService;
@@ -38,10 +38,10 @@ public class DashboardView extends VerticalLayout {
    // private final AuthService authService;
 
 
-    public DashboardView(CrmService service,TaskService taskService,ReminderService reminderService, UserRepository userrep) {
+    public DashboardView(TaskService taskService,ReminderService reminderService, UserRepository userrep) {
 
         this.userRepo=userrep;
-        this.service = service;
+    //    this.service = service;
         this.taskService=taskService;
         this.reminderService=reminderService;
         //this.authService=authService;
