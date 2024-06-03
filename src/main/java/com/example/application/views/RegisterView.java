@@ -7,54 +7,84 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 
 @Route("register")
 @PageTitle("Register | Notebox")
 @AnonymousAllowed
-public class RegisterView extends Composite {
+public class RegisterView extends HorizontalLayout {
 
     private final AuthService authServicee;
     private final UserRepository userRepository;
     public RegisterView(AuthService authService, UserRepository userRepository) {
+        addClassName("plsnospace");
         this.authServicee = authService;
         this.userRepository = userRepository;
-    }
+        Div maindiv = new Div();
+        maindiv.addClassName("loginbg");
+        maindiv.addClassName("container");
 
-    @Override
-    protected Component initContent() {
+
+        H1 text = new H1("Register");
+        text.addClassName("login-name");
         TextField firstName = new TextField("First Name");
         TextField lastName = new TextField("Last Name");
         TextField username = new TextField("Username");
         TextField institute = new TextField("Institute");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Confirm password");
-        return new VerticalLayout(
-                new H2("Register"),
+        Button reg = new Button("Submit", event-> register(
+                username.getValue(),
+                password1.getValue(),
+                password2.getValue(),
+                institute.getValue(),
+                firstName.getValue(),
+                lastName.getValue()
+        ));
+        reg.addClassName("custom-button-black");
+        RouterLink log = new RouterLink("Login", LoginView.class);
+        log.addClassName("linkb");
+
+        Div registercontent = new Div();
+        registercontent.add(
+                text,
                 firstName,
                 lastName,
                 username,
                 institute,
                 password1,
                 password2,
-
-                new Button("Submit", event-> register(
-                        username.getValue(),
-                        password1.getValue(),
-                        password2.getValue(),
-                        institute.getValue(),
-                        firstName.getValue(),
-                        lastName.getValue()
-                ))
+                reg,
+                log
         );
+        registercontent.setId("login-view");
+
+        //loginContent.getStyle().set("padding", "40px");
+
+        maindiv.add(registercontent);
+        Image img = new Image("images/loginbg.jpg", "scrawling handwriting");
+        img.getStyle().set("margin", "0");
+        img.getStyle().set("padding", "0");
+
+
+        add(maindiv,img);
+        img.setWidth("50%");
+        maindiv.setWidth("60%");
+        setSizeFull();
+        setSpacing(false);
     }
 
     private void register(String username, String password1, String password2, String institute, String firstName, String lastName) {
@@ -79,7 +109,7 @@ public class RegisterView extends Composite {
             if(alreadyExists == null) {
                 authServicee.register(username, password1, institute, firstName, lastName);
                 Notification.show("Registered");
-                UI.getCurrent().navigate("/");
+                UI.getCurrent().navigate("/login");
             }
             else
             {

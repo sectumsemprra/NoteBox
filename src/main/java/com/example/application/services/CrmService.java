@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CrmService {
+public class    CrmService {
 
     private final ContactRepository contactRepository;
     private final CompanyRepository companyRepository;

@@ -51,6 +51,16 @@ public class FileService {
         return "removed" + id;
     }
 
+    public String deleteFileEntitybyTitle(String title)
+    {
+        fileRepository.deleteByfileTitle(title);
+        return "removed " + title;
+    }
+
+    public void deleteAll(){
+        fileRepository.deleteAll();
+    }
+
     public FileEntity updateFileEntity( FileEntity fileEntity)
     {
         FileEntity existing = fileRepository.findById(fileEntity.getId()).orElse(null);

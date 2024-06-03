@@ -22,17 +22,23 @@ public class ReminderService {
 
 
 
-    public void add_reminder(String taskName, LocalDateTime reminderTime) {
-        String username=AuthService.currentUserName;
+    public Long add_reminder(String taskName, LocalDateTime reminderTime,String username) {
+        //String username=AuthService.currentUserName;
         System.out.println(username);
         Reminder reminder = new Reminder( taskName, reminderTime,username);
         reminderRepository.save(reminder);
+        return reminder.getId();
+    }
+    public void delete (Long id)
+
+    {
+        reminderRepository.deleteById(id);
     }
 
 
-    public List<Reminder> getReminderByUsername()
+    public List<Reminder> getReminderByUsername(String username)
     {
-        String username=AuthService.currentUserName;
+       // String username=AuthService.currentUserName;
         return reminderRepository.findByName(username);
     }
 }
