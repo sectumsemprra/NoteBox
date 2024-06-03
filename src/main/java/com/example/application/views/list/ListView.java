@@ -391,6 +391,7 @@ public class ListView extends VerticalLayout {
         addContactButton.addClassName("custom-button-black");
 
         Button deleteFileButton = new Button("Delete");
+        deleteFileButton.addClassName("custom-button-black");
         deleteFileButton.addClickListener(e -> deleteNotes());
 
         if(currentUser != null && currentUser.getRole() == Role.ADMIN)
