@@ -164,7 +164,7 @@ public class ListView extends VerticalLayout {
                 System.out.println(currentFileEntity.getFileTitle()+"'s file size: " + currentFileEntity.getFileContent().length + "bytes");
                 //String fileUrl = "/files?title=" + currentFileEntity.getFileTitle();
                 String fileUrl = UriComponentsBuilder.fromUriString("/files")
-                        .queryParam("title", currentFileEntity.getFileTitle())
+                        .queryParam("id", currentFileEntity.getId())
                         .toUriString();
 
                 Anchor pdfAnchor = new Anchor(fileUrl, "Open PDF");

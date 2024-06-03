@@ -367,7 +367,7 @@ public class FileUploadView extends VerticalLayout {
                         //Notification.show("Type not supported");
                         //fileContentTextArea.setVisible(false);
                         String fileUrl = UriComponentsBuilder.fromUriString("/filess")
-                                .queryParam("title", fselectedFile.getFileTitle())
+                                .queryParam("id", fselectedFile.getId())
                                 .toUriString();
 
                         Dialog dialog = getDialog(fileUrl);
