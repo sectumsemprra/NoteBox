@@ -67,6 +67,7 @@ public class ListView extends VerticalLayout {
     public String currentUsername;
     public FileEntity currentFileEntity;
     public Userr currentUser;
+    String uploadedFileName;
 
     public ListView(CrmService service, FileService fileService, AuthService authService) {
         this.service = service;
@@ -390,6 +391,7 @@ public class ListView extends VerticalLayout {
         addContactButton.addClassName("custom-button-black");
 
         Button deleteFileButton = new Button("Delete");
+        deleteFileButton.addClassName("custom-button-black");
         deleteFileButton.addClickListener(e -> deleteNotes());
 
         if(currentUser != null && currentUser.getRole() == Role.ADMIN)
@@ -427,11 +429,25 @@ public class ListView extends VerticalLayout {
                 .setAddFiles(new UploadI18N.AddFiles().setOne("Upload file"))
                 .setError(new UploadI18N.Error().setTooManyFiles("You can only upload one file")));
 
+
+
+
+        upload.addSucceededListener(event -> {
+            // Capture the file name when the file is successfully uploaded
+            uploadedFileName = event.getFileName();
+            System.out.println("Uploaded file name: " + uploadedFileName);
+        });
         Button uploadButton = new Button("Upload", event -> {
             //Notification.show("reached upload");
 
             String title = fileTitle.getValue();
-            String substr = title.substring(title.length()-3);
+            String substr = uploadedFileName.substring(uploadedFileName.length()-3);
+            title += ".";
+            title += substr;
+            System.out.println("new file name: " + title);
+            System.out.println("new file substr: " + substr);
+
+
             String description = fileDescription.getValue();
 
             String user = cuser.getUsername();
@@ -447,6 +463,7 @@ public class ListView extends VerticalLayout {
                     throw new RuntimeException(e);
                 }
                 FileEntity fileEntity = new FileEntity(id,title, contents , user, substr);
+
                 fileEntity.inPublicWorkspace = true;
                 fileEntity.setUserInstitute(cuser.getInstitute());
                 fileEntity.setUploadDate(LocalDateTime.now());
