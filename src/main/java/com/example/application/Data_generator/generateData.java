@@ -26,7 +26,7 @@ public class generateData {
 
 
             //userRepository.save(new Userr("moushi", "m", Role.USER));
-            //userRepository.save(new Userr("admin", "a", Role.ADMIN));
+            //userRepository.save(new Userr("a", "a", Role.ADMIN, "iut"));
 
 
             logger.info("Generated demo data");

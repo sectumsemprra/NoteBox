@@ -7,6 +7,7 @@ import com.example.application.services.AuthService;
 import com.example.application.services.UserRepository;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -19,14 +20,13 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -63,7 +63,7 @@ public class FileUploadView extends VerticalLayout {
     private FileEntity fselectedFile;
     private String selectedFileTitle;
     private final String finalUsername;
-    private final int finalUserId;
+    private int finalUserId = 0;
     private final UserRepository userRepo;
 
     public FileUploadView(AuthService authService, FileService fileService, UserRepository userrep) {
@@ -79,17 +79,17 @@ public class FileUploadView extends VerticalLayout {
             obj = vaadinsession.getSession().getAttribute("username");
         }
 
-        if(obj instanceof String){
+        if (obj instanceof String) {
             username = (String) obj;
         }
 
         //header for dashboard page
         Userr uss = userRepo.getByUsername(username);
-        String fullname="";
-        if(uss!=null){
-            fullname= uss.getFirstName()+" " +uss.getLastName();
+        String fullname = "";
+        if (uss != null) {
+            fullname = uss.getFirstName() + " " + uss.getLastName();
         }
-        Span usernameSpan = new Span(fullname+"'s Home");
+        Span usernameSpan = new Span(fullname + "'s Home");
         usernameSpan.addClassName("dashboard-name");
         usernameSpan.getStyle().set("margin-right", "auto");
         usernameSpan.getElement().getStyle().set("height", "55px");
@@ -109,18 +109,16 @@ public class FileUploadView extends VerticalLayout {
 
         Button addWorkSpace = new Button("Add to Workspace");
         addWorkSpace.addClassName("custom-button-black");
-        addWorkSpace.getStyle().set("margin-left","auto");
+        addWorkSpace.getStyle().set("margin-left", "auto");
         addWorkSpace.getStyle().set("align-items", "center");
 
         addWorkSpace.addClickListener(e -> {
             if (selectedFileTitle != null) {
-                if(!fselectedFile.inPublicWorkspace)
-                {
+                if (!fselectedFile.inPublicWorkspace) {
                     fselectedFile.inPublicWorkspace = true;
                     fileService.updateFileEntity(fselectedFile);
                     Notification.show("Added to Workspace");
-                }
-                else {
+                } else {
                     Notification.show("Already Added");
                 }
             } else {
@@ -130,7 +128,7 @@ public class FileUploadView extends VerticalLayout {
 
         finalUsername = username;
         Userr userr = authService.findByUsername(finalUsername);
-        finalUserId = userr.getId();
+        if (userr != null) finalUserId = userr.getId();
         //fileContentTextArea.setVisible(false);
 
         fileContentTextArea.getStyle().set("overflow", "auto");
@@ -161,7 +159,7 @@ public class FileUploadView extends VerticalLayout {
         //retrieve files
         List<FileEntity> existingFiles = fileService.getFileEntityByUsername(username);
         existingFiles.forEach(file -> {
-            if(file.inDashboard) {
+            if (file.inDashboard) {
                 fileEntities.add(file);
             }
         });
@@ -179,7 +177,7 @@ public class FileUploadView extends VerticalLayout {
         //add listener to Upload and add to fileEntities
         upload.addSucceededListener(event -> {
             String fileName = event.getFileName();
-            String substr = fileName.substring(fileName.length()-3);
+            String substr = fileName.substring(fileName.length() - 3);
             try {
                 //BufferedReader reader = new BufferedReader(new InputStreamReader(buffer.getInputStream(fileName)));
                 //String contents = reader.lines().collect(Collectors.joining("\n"));
@@ -290,13 +288,7 @@ public class FileUploadView extends VerticalLayout {
         });
 
 
-        saveButton.addClickListener(e -> {
-            if (selectedFileTitle != null) {
-                saveFileContent();
-            } else {
-                Notification.show("No file selected to save.");
-            }
-        });
+        saveButton.addClickListener(e -> saveFileContent());
 
         fileContentTextArea.setWidth("100%");
         fileContentTextArea.setHeight("120%");
@@ -350,14 +342,14 @@ public class FileUploadView extends VerticalLayout {
 
     private HorizontalLayout createNotesLayout() {
         HorizontalLayout layout = new HorizontalLayout();
-        if(!fileEntities.isEmpty()) notesContainer.setText("");
+        if (!fileEntities.isEmpty()) notesContainer.setText("");
         else notesContainer.setText("No notes yet...");
-        for(FileEntity fe : fileEntities){
+        for (FileEntity fe : fileEntities) {
 
             VerticalLayout temp = createUserTile(fe);
             temp.setWidth("200px");
             temp.addClickListener(event -> {
-                String filetitle =  event.getSource().getElement().getAttribute("file-name");
+                String filetitle = event.getSource().getElement().getAttribute("file-name");
                 FileEntity selectedFile = fe;
                 fselectedFile = selectedFile;
 
@@ -365,18 +357,17 @@ public class FileUploadView extends VerticalLayout {
 
                 if (selectedFile != null) {
                     selectedFileTitle = selectedFile.getFileTitle();
-                    if(selectedFile.textfile) {
+                    if (selectedFile.textfile) {
                         fileContentTextArea.setVisible(true);
                         String fileContent = fileService.getTextFileContent(selectedFile.getId());
                         fileContentTextArea.setValue(fileContent);
 
 
-                    }
-                    else{
+                    } else {
                         //Notification.show("Type not supported");
                         //fileContentTextArea.setVisible(false);
                         String fileUrl = UriComponentsBuilder.fromUriString("/filess")
-                                .queryParam("title", fselectedFile.getFileTitle())
+                                .queryParam("id", fselectedFile.getId())
                                 .toUriString();
                         fileContentTextArea.setValue("");
 
@@ -406,9 +397,9 @@ public class FileUploadView extends VerticalLayout {
         VerticalLayout dialogLayout = new VerticalLayout();
         Text warning = new Text("Pdf will open in a new tab");
         Button close = new Button("Close");
-        close.addClickListener(e-> dialog.close());
+        close.addClickListener(e -> dialog.close());
 
-        dialogLayout.add(warning,viewPdfButton, close);
+        dialogLayout.add(warning, viewPdfButton, close);
         dialog.add(dialogLayout);
         return dialog;
     }
@@ -436,7 +427,7 @@ public class FileUploadView extends VerticalLayout {
 
         return v;
 
-       // add(headerLayout, upload, contentLayout, new HorizontalLayout(downloadButton, deleteButton, saveButton, addToWorkspaceButton));
+        // add(headerLayout, upload, contentLayout, new HorizontalLayout(downloadButton, deleteButton, saveButton, addToWorkspaceButton));
     }
 
     private void refreshGrid() {
@@ -457,8 +448,7 @@ public class FileUploadView extends VerticalLayout {
             notesContainer.removeAll();
             notesContainer.add(createNotesLayout());
             refreshGrid();
-        }
-        else Notification.show("no files selected to delete");
+        } else Notification.show("no files selected to delete");
     }
 
     private void saveFileContent() {
@@ -471,30 +461,70 @@ public class FileUploadView extends VerticalLayout {
             selectedFile.setFileContent(newContent.getBytes(Charset.forName("UTF-8")));
             fileService.saveFileEntity(selectedFile);
             Notification.show("Changes saved successfully", 2000, Notification.Position.MIDDLE);
-        }
-        else{
-            if(fileContentTextArea.getValue() != null){
-                String content = fileContentTextArea.getValue();
-                String filename = "scratchpad.txt";
-
-                /*try {
-                    Path path = Paths.get(getBasePath() + filename);
-                    Files.write(path, content.getBytes());
-                    getUI().ifPresent(ui -> {
-                        StreamResource resource = new StreamResource(filename, () -> {
-                            try {
-                                return Files.newInputStream(path);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                return null;
-                            }
-                        });
-                        ui.getPage().open(resource, "_blank", false);
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
+        } else {
+            Notification.show("writtennn");
+            if (fileContentTextArea.getValue() != null) {
+                //Notification.show("will go to dialog");
+                nameChangeDialog();
             }
         }
+    }
+
+    private void saveNewTextFile(String newFileName, Dialog dialog){
+        dialog.close();
+        String content = fileContentTextArea.getValue();
+
+        try {
+            //Path path = Paths.get(getBasePath() + newFileName);
+            Path path = Paths.get("E:\\" + newFileName + ".txt");
+            Files.write(path, content.getBytes());
+            getUI().ifPresent(ui -> {
+                StreamResource resource = new StreamResource(newFileName, () -> {
+                    try {
+                        return Files.newInputStream(path);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                });
+                resource.setCacheTime(0);
+                Notification.show("file saved hopefully");
+
+                FileEntity fileEntity = new FileEntity(finalUserId, newFileName, content.getBytes(), finalUsername, "txt");
+                fileEntity.inDashboard = true;
+                fileEntity.setUploadDate(LocalDateTime.now());
+
+                Userr userr = authService.findByUsername(finalUsername);
+                fileEntity.setUserInstitute(userr.getInstitute());
+                fileService.saveFileEntity(fileEntity);
+                fileEntities.add(fileEntity);
+
+                Notification.show(fileEntity.getFileTitle() + " has been uploaded" + fileEntity.textfile);
+                notesContainer.removeAll();
+                notesContainer.add(createNotesLayout());
+                //UI.getCurrent().getPage().open(resource, "_blank", false);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String getBasePath() {
+        //VaadinRequest request = VaadinService.getCurrentRequest();
+        return VaadinServlet.getCurrent().getServletContext().getRealPath("/");
+    }
+
+    private void nameChangeDialog(){
+        Dialog dialog = new Dialog();
+        VerticalLayout dialogLayout = new VerticalLayout();
+        Text warning = new Text("Name of the new text file: ");
+        TextField namee = new TextField("Name");
+        Button close = new Button("Save");
+        close.addClickListener(e -> saveNewTextFile(namee.getValue(), dialog));
+
+        dialogLayout.add(warning, namee, close);
+        dialog.add(dialogLayout);
+        dialog.open();
     }
 }

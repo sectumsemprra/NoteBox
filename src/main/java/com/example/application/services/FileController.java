@@ -25,7 +25,7 @@ public class FileController {
     private FileService fileService;
 
     @GetMapping
-    public ResponseEntity<byte[]> getFile(@RequestParam String title) throws IOException {
-        return getResponseEntity(title, fileService);
+    public ResponseEntity<byte[]> getFile(@RequestParam int id) throws IOException {
+        return getResponseEntity(id, fileService);
     }
 }
