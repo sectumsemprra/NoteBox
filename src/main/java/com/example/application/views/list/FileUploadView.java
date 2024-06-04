@@ -57,7 +57,7 @@ public class FileUploadView extends VerticalLayout {
     private final Button addToWorkspaceButton = new Button("Add to Workspace");
 
     Div notesContainer = new Div();
-    private final List<FileEntity> fileEntities = new ArrayList<>();
+    private List<FileEntity> fileEntities = new ArrayList<>();
     private final AuthService authService;
     private final FileService fileService;
     private FileEntity fselectedFile;
@@ -432,7 +432,16 @@ public class FileUploadView extends VerticalLayout {
     }
 
     private void refreshGrid() {
-        grid.setItems(fileEntities);
+        List <FileEntity> temp = new ArrayList<FileEntity>();
+        for(int i = 0; i < fileEntities.size(); i++)
+        {
+            if(fileEntities.get(i).inDashboard)
+            {
+                temp.add(fileEntities.get(i));
+            }
+        }
+        grid.setItems(temp);
+        fileEntities = temp;
     }
 
     private void deleteSelectedFile() {
@@ -440,15 +449,35 @@ public class FileUploadView extends VerticalLayout {
 //                .filter(file -> file.getFileTitle().equals(selectedFileTitle))
 //                .findFirst()
 //                .orElse(null);
+
         if (fselectedFile != null) {
             fileEntities.remove(fselectedFile);
-            fileService.deleteFileEntity(fselectedFile.getId());
+            refreshGrid();
+
+            Userr userr = authService.findByUsername(finalUsername);
+            if(fselectedFile.username.equals(userr.getUsername()))
+            {
+              //  System.out.println("reached hereeeeeeeee");
+                fselectedFile.inDashboard = false;
+                if(fselectedFile.inPublicWorkspace) {
+                    fileService.updateFileEntity(fselectedFile);
+                    fileEntities.add(fselectedFile);
+
+                }
+                else{
+                    fileService.deleteFileEntity(fselectedFile.getId());
+
+                }
+
+            }
+            refreshGrid();
+          //  fileService.deleteFileEntity(fselectedFile.getId());
             selectedFileTitle = null;
             fileContentTextArea.clear();
 
             notesContainer.removeAll();
             notesContainer.add(createNotesLayout());
-            refreshGrid();
+
         } else Notification.show("no files selected to delete");
     }
 
